@@ -12,7 +12,7 @@ Developed by Cube
 
 title "Snowpy"
 
-screen 0,400,251
+screen 0,400,271
 stbar_ini
 
 //APIキーを暗号化してパック
@@ -46,6 +46,7 @@ onexit goto,*exit_app
 #include "data/module/tab_module.as"//使い方はファイル参照
 #include "data/module/hsp3utf.as"
 #include "data/module/mod_stbar.as"
+#include "data/module/hspext.as"
 
 //変数一覧 (内部システム内で使用する変数は記載していません)
 spotify_setup_flag=0										//Spotifyが認証済みかどうか 0=未認証 1=認証済み
@@ -134,6 +135,7 @@ wp_artwork=0												//アートワークを壁紙するかどうか
 progress_ms=0												//再生中の楽曲の進行状況(秒)
 currently_playing_type=""									//再生中の楽曲のタイプ
 track_lagth=0												//楽曲全体の長さ
+discord_cmd=""												//Discord送信用コマンド
 
 dummy=""													//ダミー
 
@@ -235,6 +237,7 @@ font_set=int(font_set)
 notesel set1_ini
 noteload "data/ini/set1"
 noteget artist_pun,0
+noteget discord_cmd,1
 
 
 //Set2タブで設定された項目セット
@@ -311,7 +314,7 @@ AddFontResourceA font_pass
 //タブウィンドウ作成
 //InsertTabでタブを追加
 pos 0,0
-CreateTab 400,230,0
+CreateTab 400,250,0
 hTabControl = stat
 
 //壁紙画像読み込み
@@ -436,9 +439,13 @@ input artist_pun,147,18
 pos 240,93
 mes "アーティスト区切り文字"
 
+pos 240,150
+input discord_cmd,147,18
+pos 240,133
+mes "Discordコマンド"
 
 font "IPAexゴシック",12
-pos 40,185
+pos 40,205
 mes "設定はメインウィンドウへ移動しない限り反映されません"
 
 
@@ -486,9 +493,9 @@ mes "アートワークを壁紙にする"
 
 
 objsize 170,30
-pos 2,135
-mes "テーマ(要再起動)"
 pos 2,155
+mes "テーマ(要再起動)"
+pos 2,175
 combox theme_list_num,,theme_list
 
 objsize 12,12
@@ -514,7 +521,7 @@ pos 307,18
 button goto"参照",*wp_pass_d
 
 objsize 392,25
-pos 0,179
+pos 0,199
 button goto"全設定初期化",*set_initialization
 
 /*font "IPAexゴシック",12
@@ -544,7 +551,7 @@ objsize 385,20
 combox twitter_user_num,150,twitter_user_list
 
 font "IPAexゴシック",13
-pos 5,160
+pos 5,180
 
 if account_default=""{
 	mes "アカウントが登録されていません"
@@ -553,15 +560,15 @@ if account_default=""{
 }
 
 objsize 100,20
-pos 5,180
+pos 5,200
 button goto"アカウント追加",*twitter_authorize_p
 
 objsize 100,20
-pos 110,180
+pos 110,200
 button goto"アカウント削除",*delete_twitter
 
 objsize 100,20
-pos 287,180
+pos 287,200
 button goto"このアカウントを使う",*twitter_decision
 
 if twitter_user_list="":gsel 4:objenable 2,0:objenable 3,0
@@ -583,22 +590,22 @@ gcopy 12,0,0,400,230
 color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
 
 
-pos 10,25
+pos 10,40
 picload "data/pic/swonpy_logo_info.png",1
 
 
 font "IPAexゴシック",30
-pos 178,70
+pos 178,85
 mes "Snowpy"
 
 
 font "IPAexゴシック",14
-pos 298,85
-mes "Ver. 1.20"
+pos 298,100
+mes "Ver. 1.25"
 
 
 font "IPAexゴシック",12
-pos 180,115
+pos 180,130
 mes "Developed by Cube"
 
 if develop=1{
@@ -808,6 +815,8 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	pos 0,159
 	button goto"手動でつぶやく",*tweet_spotify_info
 	pos 0,181
+	button goto"Discordに送信",*discord_bot
+	pos 0,201
 	button goto"動作停止",*do_stop
 
 	gsel 4:objenable 0,0
@@ -816,7 +825,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	gsel 4:objenable 3,0
 
 
-	main_loop_cnt=50
+	main_loop_cnt=300
 	max_sizet=0
 	scroll_now_sw=0
 	aw_set=0
@@ -838,7 +847,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	//3秒ごとに楽曲情報をAPIで取得
 	//wait 1を挟んでいるので 1秒 = 100 になる
 	
-	if main_loop_cnt=50:gosub,*main2
+	if main_loop_cnt=300:gosub,*main2
 
 	gsel 1
 	
@@ -1078,6 +1087,11 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 
 	}else{
 
+		buffer 20
+		picload "data/pic/none_artwork.png"
+
+		gsel 1
+
 		redraw 0,0,0,400,138
 		
 		pos 0,0
@@ -1310,7 +1324,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 		
 	}else{
 		
-		tab_name="楽曲再生中 / "+playing_device_name+"で再生中 / "+progress_ms_a+""
+		tab_name="楽曲再生中 / "+playing_device_name+"で再生中" /// "+progress_ms_a+""
 		nkfcnv tab_name,tab_name,"Ws"
 
 		gsel 0
@@ -1523,6 +1537,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 
 			set1_ini=""
 			set1_ini+=""+artist_pun+""
+			set1_ini+="\n"+discord_cmd+""
 
 			exist"data/ini/set1"
 			if strsize>0:delete"data/ini/set1"
@@ -1559,7 +1574,16 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 *open_track_url
 	exec track_url,16
 	goto,*main
-
+	
+*discord_bot
+	aplsel "#"
+	aplact 
+	aplkey 27
+	aplstr "/"+discord_cmd+""+track_url+""
+	wait 1
+	aplkey 13
+	goto,*main
+	
 *do_stop
 
 	loop_now=0
@@ -1575,6 +1599,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 
 	gsel 1:objenable 0,0
 	gsel 1:objenable 1,0
+	gsel 1:objenable 2,0
 
 	pos 0,0
 	gcopy 11,0,0,400,138
@@ -1588,10 +1613,11 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	pos 137,52
 	mes "動作停止中"
 
-	clrobj 2,2
+	clrobj 3,3
 	
-	pos 0,181
+	pos 0,201
 	button gosub"再開",*start
+	
 
 	tab_name="楽曲は再生されていません"
 	nkfcnv tab_name,tab_name,"Ws"
@@ -1634,6 +1660,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 
 	set1_ini=""
 	set1_ini+=""+artist_pun+""
+	set1_ini+="\n"+discord_cmd+""
 
 	exist"data/ini/set1"
 	if strsize>0:delete"data/ini/set1"
@@ -1774,15 +1801,15 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	}
 
 	objsize 100,20
-	pos 5,180
+	pos 5,200
 	button goto"アカウント追加",*twitter_authorize_p
 
 	objsize 100,20
-	pos 110,180
+	pos 110,200
 	button goto"アカウント削除",*delete_twitter
 
 	objsize 100,20
-	pos 287,180
+	pos 287,200
 	button goto"このアカウントを使う",*twitter_decision
 
 	if twitter_user_list="":gsel 4:objenable 2,0:objenable 3,0
@@ -1865,15 +1892,15 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 		}
 
 		objsize 100,20
-		pos 5,180
+		pos 5,200
 		button goto"アカウント追加",*twitter_authorize_p
 
 		objsize 100,20
-		pos 110,180
+		pos 110,200
 		button goto"アカウント削除",*delete_twitter
 
 		objsize 100,20
-		pos 287,180
+		pos 287,200
 		button goto"このアカウントを使う",*twitter_decision
 
 		if twitter_user_list="":gsel 4:objenable 2,0:objenable 3,0
@@ -1913,15 +1940,15 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	}
 
 	objsize 100,20
-	pos 5,180
+	pos 5,200
 	button goto"アカウント追加",*twitter_authorize_p
 
 	objsize 100,20
-	pos 110,180
+	pos 110,200
 	button goto"アカウント削除",*delete_twitter
 
 	objsize 100,20
-	pos 287,180
+	pos 287,200
 	button goto"このアカウントを使う",*twitter_decision
 
 	if twitter_user_list="":gsel 4:objenable 2,0:objenable 3,0
@@ -2028,15 +2055,15 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	}
 
 	objsize 100,20
-	pos 5,180
+	pos 5,200
 	button goto"アカウント追加",*twitter_authorize_p
 
 	objsize 100,20
-	pos 110,180
+	pos 110,200
 	button goto"アカウント削除",*delete_twitter
 
 	objsize 100,20
-	pos 287,180
+	pos 287,200
 	button goto"このアカウントを使う",*twitter_decision
 
 	if twitter_user_list="":gsel 4:objenable 2,0:objenable 3,0
