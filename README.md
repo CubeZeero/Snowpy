@@ -6,3 +6,5 @@ HSPで書いてます
 
 ダウンロードはここから
 https://cubemusicjp.wixsite.com/snowpy
+
+開発終了
