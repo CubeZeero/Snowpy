@@ -3,8 +3,30 @@
 Snowpy SourceCode
 Developed by Cube
 
-‚Å‚«‚éŒÀ‚èƒAƒEƒgƒRƒƒ“ƒg‚ğ‘‚¢‚Ä‚¢‚Ü‚·
-ƒ\[ƒX“Ç‚İ‚É‚­‚©‚Á‚½‚ç‚²‚ß‚ñ
+ã§ãã‚‹é™ã‚Šã‚¢ã‚¦ãƒˆã‚³ãƒ¡ãƒ³ãƒˆã‚’æ›¸ã„ã¦ã„ã¾ã™
+ã‚½ãƒ¼ã‚¹èª­ã¿ã«ãã‹ã£ãŸã‚‰ã”ã‚ã‚“
+
+MIT License
+
+Copyright (c) 2021 Cube
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 ////////////////////////////////////////////////*/
 
@@ -15,21 +37,21 @@ title "Snowpy"
 screen 0,400,271
 stbar_ini
 
-//APIƒL[‚ğˆÃ†‰»‚µ‚ÄƒpƒbƒN
+//APIã‚­ãƒ¼ã‚’æš—å·åŒ–ã—ã¦ãƒ‘ãƒƒã‚¯
 #epack "t_key.txt"
 #epack "s_key.txt"
 
-//•t‘®‚Ì.icoƒtƒ@ƒCƒ‹‚ğƒAƒCƒRƒ“‚Éİ’è
+//ä»˜å±ã®.icoãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã‚¢ã‚¤ã‚³ãƒ³ã«è¨­å®š
 #packopt icon "data/pic/swonpy_logo.ico"
 #packopt name "Swonpy"
 
 onexit goto,*exit_app
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
-//ƒf[ƒ^“Ç‚İ‚İ—“
+//ãƒ‡ãƒ¼ã‚¿èª­ã¿è¾¼ã¿æ¬„
 
 
-//ƒtƒHƒ“ƒg“Ç‚İ‚İdll
+//ãƒ•ã‚©ãƒ³ãƒˆèª­ã¿è¾¼ã¿dll
 #uselib "gdi32"
 #func AddFontResourceA "AddFontResourceA" var
 #func RemoveFontResourceA "RemoveFontResourceA" var
@@ -37,112 +59,112 @@ onexit goto,*exit_app
 #uselib "kernel32"
 #func GetModuleFileName "GetModuleFileNameA"  int,  var,  int
 
-//ƒ‚ƒWƒ…[ƒ‹ƒvƒ‰ƒOƒCƒ“
+//ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ãƒ—ãƒ©ã‚°ã‚¤ãƒ³
 #include "data/module/hspinet.as"
 #include "data/module/TsubuyakiSoup_mod.as"
 #include "data/module/hspsock.as"
 #include "data/module/newlinecode.as"
-#include "data/module/tab_module.as"//g‚¢•û‚Íƒtƒ@ƒCƒ‹QÆ
+#include "data/module/tab_module.as"//ä½¿ã„æ–¹ã¯ãƒ•ã‚¡ã‚¤ãƒ«å‚ç…§
 #include "data/module/hsp3utf.as"
 #include "data/module/mod_stbar.as"
 #include "data/module/hspext.as"
 
-//•Ï”ˆê—— (“à•”ƒVƒXƒeƒ€“à‚Åg—p‚·‚é•Ï”‚Í‹LÚ‚µ‚Ä‚¢‚Ü‚¹‚ñ)
-spotify_setup_flag=0										//Spotify‚ª”FØÏ‚İ‚©‚Ç‚¤‚© 0=–¢”FØ 1=”FØÏ‚İ
-twitter_setup_flag=0										//Twitter‚ª”FØÏ‚İ‚©‚Ç‚¤‚© 0=–¢”FØ 1=”FØÏ‚İ
-s_key=""													//Spotify‚ÌAPIƒL[
-client_id=""												//ƒNƒ‰ƒCƒAƒ“ƒgID
-client_secret=""											//ƒNƒ‰ƒCƒAƒ“ƒgƒV[ƒNƒŒƒbƒg
-t_key=""													//Twitter‚ÌAPIƒL[
-consumer_key=""												//Twitter‚ÌƒRƒ“ƒVƒ…[ƒ}[ƒL[
-consumer_secret=""											//Twitter‚ÌƒRƒ“ƒVƒ…[ƒ}[ƒV[ƒNƒŒƒbƒg
-t_apiinfo=""												//Twitter‚ÌAPIî•ñ
-t_userdata=""												//Twitter‚Ìƒ†[ƒU[î•ñ
-t_access_token=""											//TwitterAPI‚ÌƒAƒNƒZƒXƒg[ƒNƒ“
-t_access_secret=""											//TwitterAPI‚ÌƒAƒNƒZƒXƒV[ƒNƒŒƒbƒg
-tapin=""													//TwitterAPI”FØ‚É•K—v‚ÈPIN
-client_id_base64=""											//BASE64ƒGƒ“ƒR[ƒh‚³‚ê‚½ƒNƒ‰ƒCƒAƒ“ƒgID
-client_secret_base64=""										//BASE64ƒGƒ“ƒR[ƒh‚³‚ê‚½ƒNƒ‰ƒCƒAƒ“ƒgƒV[ƒNƒŒƒbƒg
-redirect_url="http://localhost:12001"						//ƒŠƒ_ƒCƒŒƒNƒgURL
-sdim code_authorize,271										//ƒuƒ‰ƒEƒU”FØ‚É“n‚³‚ê‚éƒR[ƒh
-post_authorize=""											//‘æ2”FØ‚ÉPOSTƒŠƒNƒGƒXƒg‚·‚éƒf[ƒ^
-waitres=0													//netexecŠm”F—p
-sdim access_token,159										//ƒAƒNƒZƒXƒg[ƒNƒ“
-refresh_token=""											//VƒAƒNƒZƒXƒg[ƒNƒ“ŒğŠ·—p
-s_token_set=""												//SpotifyAPIƒg[ƒNƒ“ƒZƒbƒg(‰üsÏ‚İ)
-player_api_url="https://api.spotify.com/v1/me/player/"		//PLAYERŠÖŒW‚ÌAPIê—p‚ÌURL
-playing_track_info=""										//Œ»İ’®‚¢‚Ä‚¢‚é‹È‚Ì‘Sî•ñ(JSON)						
-track_name=""												//Œ»İ’®‚¢‚Ä‚¢‚é‹È–¼
-track_name_c=""												//Œ»İ’®‚¢‚Ä‚¢‚é‹È–¼‚Ìˆê•ÛŠÇ—p
-dim artist_name,30											//Œ»İ’®‚¢‚Ä‚¢‚é‹È‚ÌƒA[ƒeƒBƒXƒg–¼
-artist_name_all=""											//Œ»İ’®‚¢‚Ä‚¢‚é‹È‚Ì‚·‚×‚Ä‚ÌƒA[ƒeƒBƒXƒg–¼
-artist_name_c=""											//Œ»İ’®‚¢‚Ä‚¢‚é‹È‚ÌƒA[ƒeƒBƒXƒg–¼‚Ìˆê•ÛŠÇ—p
-track_url=""												//‹È‚ÌSpotifyURL
-track_url_c=""												//‹È‚ÌSpotifyURL‚Ìˆê•ÛŠÇ—p
-album_name=""												//ƒAƒ‹ƒoƒ€–¼
-album_name_c=""												//ƒAƒ‹ƒoƒ€–¼‚Ìˆê•ÛŠÇ—p
-artwork_index=0												//ƒA[ƒgƒ[ƒNURL‚ª‚ ‚és”Ô†
-artwork_url=""												//ƒA[ƒgƒ[ƒN‚ª‚ ‚éURL(640x640)
-artwork_pass(0)="data/pic/artwork.jpg"						//ƒA[ƒgƒ[ƒN‚ÌêŠ
-artwork_switch=0											//ƒA[ƒgƒ[ƒN“ŠeƒXƒCƒbƒ`(0=“Še‚µ‚È‚¢ 1=“Še)
-overtweet_switch=0											//d•¡“Še‚·‚é‚©‚Ç‚¤‚©B‚ª‘}“ü‚³‚ê‚é(0=‚µ‚È‚¢ 1=‚·‚é)
-sdim tweet_data,1024										//ƒcƒC[ƒg“à—e
-sdim tweet_data_c,1024										//ƒcƒC[ƒg“à—e‚Ìˆê•ÛŠÇ—p
-sdim tweet_data_s,1024										//ƒcƒC[ƒg“à—e‚Ì‰Šú
-tab_flag=0													//ƒ^ƒuØ‚è‘Ö‚¦‚ÉƒAƒNƒeƒBƒu‚Èƒ^ƒu‚ÌID‚ªŠi”[‚³‚ê‚é(0‚©‚çn‚Ü‚é)
-set1_ini=""													//Set1ƒ^ƒu‚Åİ’è‚³‚ê‚½€–ÚƒZƒbƒg
-set2_ini=""													//Set2ƒ^ƒu‚Åİ’è‚³‚ê‚½€–ÚƒZƒbƒg
-sdim tweet_response,5000									//ƒcƒC[ƒgŒã‚ÉTwitterAPI‚©‚ç‚ÌƒŒƒXƒ|ƒ“ƒX
-wp_pass=""													//•Ç†‚ª‚ ‚éêŠ
-wp_pass_up=""												//•Ç†‚ÌêŠ‚ÌXV
-wp_switch=0													//•Ç†‚ğg‚¤‚©‚Ç‚¤‚©(0=g‚í‚È‚¢ 1=g‚¤)
-font_pass="data/font/ipaexg.ttf"							//ƒtƒHƒ“ƒgƒtƒ@ƒCƒ‹‚ÌêŠ
-do_restart=0												//“®ì‚ªÄŠJ‚³‚ê‚½‚©‚Ç‚¤‚©(1=‚³‚ê‚½ 0=‚³‚ê‚Ä‚È‚¢)
-is_local=0													//ƒ[ƒJƒ‹ƒtƒ@ƒCƒ‹‚©‚Ç‚¤‚©(1=ƒ[ƒJƒ‹ƒtƒ@ƒCƒ‹ 0=ƒ[ƒJƒ‹ƒtƒ@ƒCƒ‹‚Å‚Í‚È‚¢)
-auto_tweet_sw=0												//©“®ƒcƒC[ƒgƒXƒCƒbƒ`(1=–³Œø 0=—LŒø)
-theme_list=""												//ƒe[ƒ}ƒtƒ@ƒCƒ‹ˆê——
-theme_list_num=0											//“K—p‚³‚ê‚Ä‚¢‚éƒe[ƒ}”Ô†
-spt_bc_data=""												//ƒe[ƒ}ƒtƒ@ƒCƒ‹‚ÌƒoƒbƒNƒOƒ‰ƒEƒ“ƒh”wŒiF‘Sƒf[ƒ^
-spt_tc_data=""												//ƒe[ƒ}ƒtƒ@ƒCƒ‹‚ÌƒeƒLƒXƒgF‘Sƒf[ƒ^
-spt_bi_data=""												//ƒe[ƒ}ƒoƒbƒNƒOƒ‰ƒEƒ“ƒh‰æ‘œ
-spt_bi_tp=0													//ƒe[ƒ}ƒoƒbƒNƒOƒ‰ƒEƒ“ƒh‰æ‘œ‚Ì“§–¾“x
-dim spt_bc,3												//ƒe[ƒ}ƒtƒ@ƒCƒ‹‚ÌƒoƒbƒNƒOƒ‰ƒEƒ“ƒh”wŒiF (RGB)
-dim spt_tc,3												//ƒe[ƒ}ƒtƒ@ƒCƒ‹‚ÌƒeƒLƒXƒgF (RGB)
-spt_data=""													//ƒe[ƒ}ƒtƒ@ƒCƒ‹‚Ìƒf[ƒ^
-theme_name=""												//“K—p‚³‚ê‚Ä‚¢‚éor‘I‘ğ‚³‚ê‚½ƒe[ƒ}–¼
-tweet_button_sw=0											//è“®ƒcƒC[ƒgƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚©‚Ç‚¤‚© (1=‚³‚ê‚½ 0=‚³‚ê‚Ä‚È‚¢)
-twitter_user_num=0											//ƒcƒCƒbƒ^[ƒ†[ƒU[“o˜^”
-twitter_user_list=""										//ƒcƒCƒbƒ^[ƒ†[ƒU[ƒŠƒXƒg
-account_ini=""												//ƒAƒJƒEƒ“ƒgİ’èƒf[ƒ^
-account_default=""											//ƒfƒtƒHƒ‹ƒgƒAƒJƒEƒ“ƒg–¼
-error_report_sw=1											//ƒGƒ‰[ƒŒƒ|[ƒg‘—M‚·‚é‚©‚µ‚È‚¢‚©
-tab_name=""													//ƒ^ƒu‚Ì•¶š(‚±‚Ìƒ\ƒtƒg‚Íhspƒ‰ƒ“ƒ^ƒCƒ€‚Åutf8‰»‚³‚¹‚Ä“®‚©‚µ‚Ä‚¢‚é‚Ì‚Åsjis‚©‚çutf8‚É•ÏŠ·‚·‚é•K—v‚ª‚ ‚é)
-font_set=""													//ƒtƒHƒ“ƒg‚ªƒCƒ“ƒXƒg[ƒ‹‚³‚ê‚Ä‚¢‚é‚©‚Ç‚¤‚©
-is_playing=""												//Ä¶’†‚©‚Ç‚¤‚©(ˆê’â~’†‚©‚Ç‚¤‚©)
-language_list=""											//Œ¾ŒêƒŠƒXƒg
-language_list_num=0											//Œ¾ŒêƒŠƒXƒg“à‚Ìw’è”Ô†
-language_name=""											//İ’è‚³‚ê‚½Œ¾Œê–¼
-artist_pun=""												//•¡”ƒA[ƒeƒBƒXƒg‚ª‚¢‚½ê‡—p‚Ì‹æØ‚è•¶š
+//å¤‰æ•°ä¸€è¦§ (å†…éƒ¨ã‚·ã‚¹ãƒ†ãƒ å†…ã§ä½¿ç”¨ã™ã‚‹å¤‰æ•°ã¯è¨˜è¼‰ã—ã¦ã„ã¾ã›ã‚“)
+spotify_setup_flag=0										//SpotifyãŒèªè¨¼æ¸ˆã¿ã‹ã©ã†ã‹ 0=æœªèªè¨¼ 1=èªè¨¼æ¸ˆã¿
+twitter_setup_flag=0										//TwitterãŒèªè¨¼æ¸ˆã¿ã‹ã©ã†ã‹ 0=æœªèªè¨¼ 1=èªè¨¼æ¸ˆã¿
+s_key=""													//Spotifyã®APIã‚­ãƒ¼
+client_id=""												//ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆID
+client_secret=""											//ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã‚·ãƒ¼ã‚¯ãƒ¬ãƒƒãƒˆ
+t_key=""													//Twitterã®APIã‚­ãƒ¼
+consumer_key=""												//Twitterã®ã‚³ãƒ³ã‚·ãƒ¥ãƒ¼ãƒãƒ¼ã‚­ãƒ¼
+consumer_secret=""											//Twitterã®ã‚³ãƒ³ã‚·ãƒ¥ãƒ¼ãƒãƒ¼ã‚·ãƒ¼ã‚¯ãƒ¬ãƒƒãƒˆ
+t_apiinfo=""												//Twitterã®APIæƒ…å ±
+t_userdata=""												//Twitterã®ãƒ¦ãƒ¼ã‚¶ãƒ¼æƒ…å ±
+t_access_token=""											//TwitterAPIã®ã‚¢ã‚¯ã‚»ã‚¹ãƒˆãƒ¼ã‚¯ãƒ³
+t_access_secret=""											//TwitterAPIã®ã‚¢ã‚¯ã‚»ã‚¹ã‚·ãƒ¼ã‚¯ãƒ¬ãƒƒãƒˆ
+tapin=""													//TwitterAPIèªè¨¼æ™‚ã«å¿…è¦ãªPIN
+client_id_base64=""											//BASE64ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‰ã•ã‚ŒãŸã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆID
+client_secret_base64=""										//BASE64ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‰ã•ã‚ŒãŸã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã‚·ãƒ¼ã‚¯ãƒ¬ãƒƒãƒˆ
+redirect_url="http://localhost:12001"						//ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆURL
+sdim code_authorize,271										//ãƒ–ãƒ©ã‚¦ã‚¶èªè¨¼æ™‚ã«æ¸¡ã•ã‚Œã‚‹ã‚³ãƒ¼ãƒ‰
+post_authorize=""											//ç¬¬2èªè¨¼æ™‚ã«POSTãƒªã‚¯ã‚¨ã‚¹ãƒˆã™ã‚‹ãƒ‡ãƒ¼ã‚¿
+waitres=0													//netexecç¢ºèªç”¨
+sdim access_token,159										//ã‚¢ã‚¯ã‚»ã‚¹ãƒˆãƒ¼ã‚¯ãƒ³
+refresh_token=""											//æ–°ã‚¢ã‚¯ã‚»ã‚¹ãƒˆãƒ¼ã‚¯ãƒ³äº¤æ›ç”¨
+s_token_set=""												//SpotifyAPIãƒˆãƒ¼ã‚¯ãƒ³ã‚»ãƒƒãƒˆ(æ”¹è¡Œæ¸ˆã¿)
+player_api_url="https://api.spotify.com/v1/me/player/"		//PLAYERé–¢ä¿‚ã®APIå°‚ç”¨ã®URL
+playing_track_info=""										//ç¾åœ¨è´ã„ã¦ã„ã‚‹æ›²ã®å…¨æƒ…å ±(JSON)						
+track_name=""												//ç¾åœ¨è´ã„ã¦ã„ã‚‹æ›²å
+track_name_c=""												//ç¾åœ¨è´ã„ã¦ã„ã‚‹æ›²åã®ä¸€æ™‚ä¿ç®¡ç”¨
+dim artist_name,30											//ç¾åœ¨è´ã„ã¦ã„ã‚‹æ›²ã®ã‚¢ãƒ¼ãƒ†ã‚£ã‚¹ãƒˆå
+artist_name_all=""											//ç¾åœ¨è´ã„ã¦ã„ã‚‹æ›²ã®ã™ã¹ã¦ã®ã‚¢ãƒ¼ãƒ†ã‚£ã‚¹ãƒˆå
+artist_name_c=""											//ç¾åœ¨è´ã„ã¦ã„ã‚‹æ›²ã®ã‚¢ãƒ¼ãƒ†ã‚£ã‚¹ãƒˆåã®ä¸€æ™‚ä¿ç®¡ç”¨
+track_url=""												//æ›²ã®SpotifyURL
+track_url_c=""												//æ›²ã®SpotifyURLã®ä¸€æ™‚ä¿ç®¡ç”¨
+album_name=""												//ã‚¢ãƒ«ãƒãƒ å
+album_name_c=""												//ã‚¢ãƒ«ãƒãƒ åã®ä¸€æ™‚ä¿ç®¡ç”¨
+artwork_index=0												//ã‚¢ãƒ¼ãƒˆãƒ¯ãƒ¼ã‚¯URLãŒã‚ã‚‹è¡Œç•ªå·
+artwork_url=""												//ã‚¢ãƒ¼ãƒˆãƒ¯ãƒ¼ã‚¯ãŒã‚ã‚‹URL(640x640)
+artwork_pass(0)="data/pic/artwork.jpg"						//ã‚¢ãƒ¼ãƒˆãƒ¯ãƒ¼ã‚¯ã®å ´æ‰€
+artwork_switch=0											//ã‚¢ãƒ¼ãƒˆãƒ¯ãƒ¼ã‚¯æŠ•ç¨¿ã‚¹ã‚¤ãƒƒãƒ(0=æŠ•ç¨¿ã—ãªã„ 1=æŠ•ç¨¿)
+overtweet_switch=0											//é‡è¤‡æŠ•ç¨¿ã™ã‚‹ã‹ã©ã†ã‹ã€‚æ™‚åˆ»ãŒæŒ¿å…¥ã•ã‚Œã‚‹(0=ã—ãªã„ 1=ã™ã‚‹)
+sdim tweet_data,1024										//ãƒ„ã‚¤ãƒ¼ãƒˆå†…å®¹
+sdim tweet_data_c,1024										//ãƒ„ã‚¤ãƒ¼ãƒˆå†…å®¹ã®ä¸€æ™‚ä¿ç®¡ç”¨
+sdim tweet_data_s,1024										//ãƒ„ã‚¤ãƒ¼ãƒˆå†…å®¹ã®åˆæœŸ
+tab_flag=0													//ã‚¿ãƒ–åˆ‡ã‚Šæ›¿ãˆæ™‚ã«ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãªã‚¿ãƒ–ã®IDãŒæ ¼ç´ã•ã‚Œã‚‹(0ã‹ã‚‰å§‹ã¾ã‚‹)
+set1_ini=""													//Set1ã‚¿ãƒ–ã§è¨­å®šã•ã‚ŒãŸé …ç›®ã‚»ãƒƒãƒˆ
+set2_ini=""													//Set2ã‚¿ãƒ–ã§è¨­å®šã•ã‚ŒãŸé …ç›®ã‚»ãƒƒãƒˆ
+sdim tweet_response,5000									//ãƒ„ã‚¤ãƒ¼ãƒˆå¾Œã«TwitterAPIã‹ã‚‰ã®ãƒ¬ã‚¹ãƒãƒ³ã‚¹
+wp_pass=""													//å£ç´™ãŒã‚ã‚‹å ´æ‰€
+wp_pass_up=""												//å£ç´™ã®å ´æ‰€ã®æ›´æ–°
+wp_switch=0													//å£ç´™ã‚’ä½¿ã†ã‹ã©ã†ã‹(0=ä½¿ã‚ãªã„ 1=ä½¿ã†)
+font_pass="data/font/ipaexg.ttf"							//ãƒ•ã‚©ãƒ³ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã®å ´æ‰€
+do_restart=0												//å‹•ä½œãŒå†é–‹ã•ã‚ŒãŸã‹ã©ã†ã‹(1=ã•ã‚ŒãŸ 0=ã•ã‚Œã¦ãªã„)
+is_local=0													//ãƒ­ãƒ¼ã‚«ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«ã‹ã©ã†ã‹(1=ãƒ­ãƒ¼ã‚«ãƒ«ãƒ•ã‚¡ã‚¤ãƒ« 0=ãƒ­ãƒ¼ã‚«ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«ã§ã¯ãªã„)
+auto_tweet_sw=0												//è‡ªå‹•ãƒ„ã‚¤ãƒ¼ãƒˆã‚¹ã‚¤ãƒƒãƒ(1=ç„¡åŠ¹ 0=æœ‰åŠ¹)
+theme_list=""												//ãƒ†ãƒ¼ãƒãƒ•ã‚¡ã‚¤ãƒ«ä¸€è¦§
+theme_list_num=0											//é©ç”¨ã•ã‚Œã¦ã„ã‚‹ãƒ†ãƒ¼ãƒç•ªå·
+spt_bc_data=""												//ãƒ†ãƒ¼ãƒãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒãƒƒã‚¯ã‚°ãƒ©ã‚¦ãƒ³ãƒ‰èƒŒæ™¯è‰²å…¨ãƒ‡ãƒ¼ã‚¿
+spt_tc_data=""												//ãƒ†ãƒ¼ãƒãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ†ã‚­ã‚¹ãƒˆè‰²å…¨ãƒ‡ãƒ¼ã‚¿
+spt_bi_data=""												//ãƒ†ãƒ¼ãƒãƒãƒƒã‚¯ã‚°ãƒ©ã‚¦ãƒ³ãƒ‰ç”»åƒ
+spt_bi_tp=0													//ãƒ†ãƒ¼ãƒãƒãƒƒã‚¯ã‚°ãƒ©ã‚¦ãƒ³ãƒ‰ç”»åƒã®é€æ˜åº¦
+dim spt_bc,3												//ãƒ†ãƒ¼ãƒãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒãƒƒã‚¯ã‚°ãƒ©ã‚¦ãƒ³ãƒ‰èƒŒæ™¯è‰² (RGB)
+dim spt_tc,3												//ãƒ†ãƒ¼ãƒãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ†ã‚­ã‚¹ãƒˆè‰² (RGB)
+spt_data=""													//ãƒ†ãƒ¼ãƒãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‡ãƒ¼ã‚¿
+theme_name=""												//é©ç”¨ã•ã‚Œã¦ã„ã‚‹oré¸æŠã•ã‚ŒãŸãƒ†ãƒ¼ãƒå
+tweet_button_sw=0											//æ‰‹å‹•ãƒ„ã‚¤ãƒ¼ãƒˆãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã‹ã©ã†ã‹ (1=ã•ã‚ŒãŸ 0=ã•ã‚Œã¦ãªã„)
+twitter_user_num=0											//ãƒ„ã‚¤ãƒƒã‚¿ãƒ¼ãƒ¦ãƒ¼ã‚¶ãƒ¼ç™»éŒ²æ•°
+twitter_user_list=""										//ãƒ„ã‚¤ãƒƒã‚¿ãƒ¼ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒªã‚¹ãƒˆ
+account_ini=""												//ã‚¢ã‚«ã‚¦ãƒ³ãƒˆè¨­å®šãƒ‡ãƒ¼ã‚¿
+account_default=""											//ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚¢ã‚«ã‚¦ãƒ³ãƒˆå
+error_report_sw=1											//ã‚¨ãƒ©ãƒ¼ãƒ¬ãƒãƒ¼ãƒˆé€ä¿¡ã™ã‚‹ã‹ã—ãªã„ã‹
+tab_name=""													//ã‚¿ãƒ–ã®æ–‡å­—(ã“ã®ã‚½ãƒ•ãƒˆã¯hspãƒ©ãƒ³ã‚¿ã‚¤ãƒ ã§utf8åŒ–ã•ã›ã¦å‹•ã‹ã—ã¦ã„ã‚‹ã®ã§sjisã‹ã‚‰utf8ã«å¤‰æ›ã™ã‚‹å¿…è¦ãŒã‚ã‚‹)
+font_set=""													//ãƒ•ã‚©ãƒ³ãƒˆãŒã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã•ã‚Œã¦ã„ã‚‹ã‹ã©ã†ã‹
+is_playing=""												//å†ç”Ÿä¸­ã‹ã©ã†ã‹(ä¸€æ™‚åœæ­¢ä¸­ã‹ã©ã†ã‹)
+language_list=""											//è¨€èªãƒªã‚¹ãƒˆ
+language_list_num=0											//è¨€èªãƒªã‚¹ãƒˆå†…ã®æŒ‡å®šç•ªå·
+language_name=""											//è¨­å®šã•ã‚ŒãŸè¨€èªå
+artist_pun=""												//è¤‡æ•°ã‚¢ãƒ¼ãƒ†ã‚£ã‚¹ãƒˆãŒã„ãŸå ´åˆç”¨ã®åŒºåˆ‡ã‚Šæ–‡å­—
 develop=0
 develop_code="dc09453327"									//DEVELOPCODE
 stopupdating=1
 develop_twitter=""
 develop_spotify=""
-playing_device_info=""										//Ä¶‚µ‚Ä‚¢‚éƒfƒoƒCƒX‚Ì‘Sî•ñ
-playing_device_name=""										//Ä¶‚µ‚Ä‚¢‚éƒfƒoƒCƒX–¼
-wp_artwork=0												//ƒA[ƒgƒ[ƒN‚ğ•Ç†‚·‚é‚©‚Ç‚¤‚©
-progress_ms=0												//Ä¶’†‚ÌŠy‹È‚Ìisó‹µ(•b)
-currently_playing_type=""									//Ä¶’†‚ÌŠy‹È‚Ìƒ^ƒCƒv
-track_lagth=0												//Šy‹È‘S‘Ì‚Ì’·‚³
-discord_cmd=""												//Discord‘—M—pƒRƒ}ƒ“ƒh
-window_active=0												//Å‘O–Ê•\¦‚³‚¹‚é‚©‚Ç‚¤‚©
-wp_artwork_flag=0											//Œ»İ•Ç†‚ªƒA[ƒgƒ[ƒN‚©‚Ç‚¤‚©
+playing_device_info=""										//å†ç”Ÿã—ã¦ã„ã‚‹ãƒ‡ãƒã‚¤ã‚¹ã®å…¨æƒ…å ±
+playing_device_name=""										//å†ç”Ÿã—ã¦ã„ã‚‹ãƒ‡ãƒã‚¤ã‚¹å
+wp_artwork=0												//ã‚¢ãƒ¼ãƒˆãƒ¯ãƒ¼ã‚¯ã‚’å£ç´™ã™ã‚‹ã‹ã©ã†ã‹
+progress_ms=0												//å†ç”Ÿä¸­ã®æ¥½æ›²ã®é€²è¡ŒçŠ¶æ³(ç§’)
+currently_playing_type=""									//å†ç”Ÿä¸­ã®æ¥½æ›²ã®ã‚¿ã‚¤ãƒ—
+track_lagth=0												//æ¥½æ›²å…¨ä½“ã®é•·ã•
+discord_cmd=""												//Discordé€ä¿¡ç”¨ã‚³ãƒãƒ³ãƒ‰
+window_active=0												//æœ€å‰é¢è¡¨ç¤ºã•ã›ã‚‹ã‹ã©ã†ã‹
+wp_artwork_flag=0											//ç¾åœ¨å£ç´™ãŒã‚¢ãƒ¼ãƒˆãƒ¯ãƒ¼ã‚¯ã‹ã©ã†ã‹
 note_infodata=""
 streamdeck_sw=""
-dim pti_json,20												//Jsonƒ|ƒCƒ“ƒ^
-playing_device_active=0										//ƒfƒoƒCƒX‚ªƒAƒNƒeƒBƒu‚©‚Ç‚¤‚©
-player_pausing=0											//’â~’†‚©‚Ç‚¤‚©
-track_duration_ms=0											//Ä¶’†‚ÌŠy‹È‚Ì•b”
+dim pti_json,20												//Jsonãƒã‚¤ãƒ³ã‚¿
+playing_device_active=0										//ãƒ‡ãƒã‚¤ã‚¹ãŒã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã‹ã©ã†ã‹
+player_pausing=0											//åœæ­¢ä¸­ã‹ã©ã†ã‹
+track_duration_ms=0											//å†ç”Ÿä¸­ã®æ¥½æ›²ã®ç§’æ•°
 track_duration_ms_s=""
 track_duration_ms_ms=""
 track_duration_m=0
@@ -155,9 +177,9 @@ track_progress_ms_s=0
 progress_bar_cnt=0
 progress_bar_rb=0
 
-dummy=""													//ƒ_ƒ~[
+dummy=""													//ãƒ€ãƒŸãƒ¼
 
-//-----------------------------Œ¾Œê•ÏX—p•Ï”‰Šú‰»-----------------------------
+//-----------------------------è¨€èªå¤‰æ›´ç”¨å¤‰æ•°åˆæœŸåŒ–-----------------------------
 
 tab_name_main=""
 tab_name_set1=""
@@ -189,45 +211,45 @@ exist"data/ini/dc09453327"
 if strsize=0 : develop=1
 
 
-//\¬ƒf[ƒ^“Ç‚İ‚İ
+//æ§‹æˆãƒ‡ãƒ¼ã‚¿èª­ã¿è¾¼ã¿
 
-//spotify”FØÏ‚İ‚©‚Ç‚¤‚©
+//spotifyèªè¨¼æ¸ˆã¿ã‹ã©ã†ã‹
 notesel spotify_setup_flag
 noteload "data/ini/spotify_setup"
 
 
-//twitter”FØÏ‚İ‚©‚Ç‚¤‚©
+//twitterèªè¨¼æ¸ˆã¿ã‹ã©ã†ã‹
 notesel twitter_setup_flag
 noteload "data/ini/twitter_setup"
 
 
-//”’l•ÏŠ·
+//æ•°å€¤å¤‰æ›
 spotify_setup_flag=int(spotify_setup_flag)
 twitter_setup_flag=int(twitter_setup_flag)
 
 
-//Spotify‚ÌAPIƒL[
+//Spotifyã®APIã‚­ãƒ¼
 notesel s_key
 noteload "s_key.txt"
 noteget client_id,0
 noteget client_secret,1
 
 
-//Twitter‚ÌAPIƒL[
+//Twitterã®APIã‚­ãƒ¼
 notesel t_key
 noteload "t_key.txt"
 noteget consumer_key,0
 noteget consumer_secret,1
 
 
-//twitterƒAƒJƒEƒ“ƒgİ’èƒf[ƒ^
+//twitterã‚¢ã‚«ã‚¦ãƒ³ãƒˆè¨­å®šãƒ‡ãƒ¼ã‚¿
 notesel account_ini
 noteload "data/ini/accountset"
 noteget account_default,0
 
 
-//Twitter‚ÌAPIî•ñ
-//ˆê‰ñ‚à”FØ“o˜^‚ª‚Å‚«‚Ä‚¢‚È‚¢ê‡“Ç‚İ‚Ü‚¹‚È‚¢
+//Twitterã®APIæƒ…å ±
+//ä¸€å›ã‚‚èªè¨¼ç™»éŒ²ãŒã§ãã¦ã„ãªã„å ´åˆèª­ã¿è¾¼ã¾ã›ãªã„
 if twitter_setup_flag=1{
 notesel t_apiinfo
 noteload "data/api/twitter/"+account_default+".spa"
@@ -236,14 +258,14 @@ noteget t_access_secret,2
 }
 
 
-//SpotifyAPIƒg[ƒNƒ“ƒZƒbƒg(‰üsÏ‚İ)
+//SpotifyAPIãƒˆãƒ¼ã‚¯ãƒ³ã‚»ãƒƒãƒˆ(æ”¹è¡Œæ¸ˆã¿)
 notesel s_token_set
 noteload "data/api/s_access_token"
 noteget access_token,0
 noteget refresh_token,1
 
 
-//ƒcƒC[ƒg“à—e
+//ãƒ„ã‚¤ãƒ¼ãƒˆå†…å®¹
 notesel tweet_data
 noteload "data/ini/tweet_data"
 
@@ -251,14 +273,14 @@ notesel font_set
 noteload "data/font/font_set"
 font_set=int(font_set)
 
-//Set1ƒ^ƒu‚Åİ’è‚³‚ê‚½€–ÚƒZƒbƒg
+//Set1ã‚¿ãƒ–ã§è¨­å®šã•ã‚ŒãŸé …ç›®ã‚»ãƒƒãƒˆ
 notesel set1_ini
 noteload "data/ini/set1"
 noteget artist_pun,0
 noteget discord_cmd,1
 
 
-//Set2ƒ^ƒu‚Åİ’è‚³‚ê‚½€–ÚƒZƒbƒg
+//Set2ã‚¿ãƒ–ã§è¨­å®šã•ã‚ŒãŸé …ç›®ã‚»ãƒƒãƒˆ
 notesel set2_ini
 noteload "data/ini/set2"
 noteget wp_pass,0
@@ -274,7 +296,7 @@ noteget window_active,9
 noteget develop_code,10
 
 
-//”’l•ÏŠ·
+//æ•°å€¤å¤‰æ›
 auto_tweet_sw=int(auto_tweet_sw)
 theme_list_num=int(theme_list_num)
 language_list_num=int(language_list_num)
@@ -284,32 +306,32 @@ overtweet_switch=int(overtweet_switch)
 window_active=int(window_active)
 
 
-//ƒe[ƒ}ˆê——æ“¾
+//ãƒ†ãƒ¼ãƒä¸€è¦§å–å¾—
 dirlist theme_list,"data/theme/*.spt",0
 strrep theme_list,".spt",""
 
-//Œ¾Œêƒtƒ@ƒCƒ‹ˆê——æ“¾
+//è¨€èªãƒ•ã‚¡ã‚¤ãƒ«ä¸€è¦§å–å¾—
 dirlist language_list,"data/language/*.spl",0
 strrep language_list,".spl",""
 
-//“o˜^ƒAƒJƒEƒ“ƒgˆê——æ“¾
+//ç™»éŒ²ã‚¢ã‚«ã‚¦ãƒ³ãƒˆä¸€è¦§å–å¾—
 dirlist twitter_user_list,"data/api/twitter/*.spa",0
 strrep twitter_user_list,".spa",""
 
-//w’è‚³‚ê‚Ä‚¢‚½ƒe[ƒ}“Ç‚İ‚İ
+//æŒ‡å®šã•ã‚Œã¦ã„ãŸãƒ†ãƒ¼ãƒèª­ã¿è¾¼ã¿
 notesel spt_data
 noteload "data/theme/"+theme_name+".spt"
 noteget spt_bc_data,0
-split spt_bc_data,",",spt_bc(0),spt_bc(1),spt_bc(2)//”wŒiF
+split spt_bc_data,",",spt_bc(0),spt_bc(1),spt_bc(2)//èƒŒæ™¯è‰²
 noteget spt_tc_data,1
-split spt_tc_data,",",spt_tc(0),spt_tc(1),spt_tc(2)//ƒeƒLƒXƒgF
+split spt_tc_data,",",spt_tc(0),spt_tc(1),spt_tc(2)//ãƒ†ã‚­ã‚¹ãƒˆè‰²
 noteget spt_bi_data,2
 noteget spt_bi_tp,3
 
 
-//ƒe[ƒ}“§–¾“x
-//–³‹L“ü‚É‚È‚Á‚Ä‚¢‚½‚ç200‚Éİ’è
-//ãŒÀ‚Í255
+//ãƒ†ãƒ¼ãƒé€æ˜åº¦
+//ç„¡è¨˜å…¥ã«ãªã£ã¦ã„ãŸã‚‰200ã«è¨­å®š
+//ä¸Šé™ã¯255
 if spt_bi_tp=""{
 	spt_bi_tp=200
 }else{
@@ -317,28 +339,28 @@ if spt_bi_tp=""{
 }
 
 
-//ƒ‰ƒxƒ‹ˆê——
-//*spotify_authorize										//Spotify‚ÌAPI”FØ
-//*twitter_authorize										//Twitter‚ÌAPI”FØ
-//*s_get_code_authorize										//Spotify‚Ìcode_authorize‚ğóM‚·‚é
-//*s_get_access_token										//Spotify‚Ìaccess_token‚ğóM‚·‚é
-//*t_get_access_token										//Twitter‚Ìaccess_token‚ğóM‚·‚é
-//*tweet_spotify_info										//ƒcƒCƒbƒ^[‚É“Še
-//*open_track_url											//Šy‹È‚ÌURL‚ğƒuƒ‰ƒEƒU‚ÅŠJ‚­
+//ãƒ©ãƒ™ãƒ«ä¸€è¦§
+//*spotify_authorize										//Spotifyã®APIèªè¨¼
+//*twitter_authorize										//Twitterã®APIèªè¨¼
+//*s_get_code_authorize										//Spotifyã®code_authorizeã‚’å—ä¿¡ã™ã‚‹
+//*s_get_access_token										//Spotifyã®access_tokenã‚’å—ä¿¡ã™ã‚‹
+//*t_get_access_token										//Twitterã®access_tokenã‚’å—ä¿¡ã™ã‚‹
+//*tweet_spotify_info										//ãƒ„ã‚¤ãƒƒã‚¿ãƒ¼ã«æŠ•ç¨¿
+//*open_track_url											//æ¥½æ›²ã®URLã‚’ãƒ–ãƒ©ã‚¦ã‚¶ã§é–‹ã
 
 
 //_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
 
 AddFontResourceA font_pass
 
-//ƒ^ƒuƒEƒBƒ“ƒhƒEì¬
-//InsertTab‚Åƒ^ƒu‚ğ’Ç‰Á
+//ã‚¿ãƒ–ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ä½œæˆ
+//InsertTabã§ã‚¿ãƒ–ã‚’è¿½åŠ 
 pos 0,0
 CreateTab 400,250,0
 hTabControl = stat
 
-//•Ç†‰æ‘œ“Ç‚İ‚İ
-//–œ‚ªˆê‚É”õ‚¦‚Äpass‚ª–³‹L“ü‚Å•Û‘¶‚³‚ê‚Ä‚¢‚½ê‡ƒfƒtƒHƒ‹ƒg•Ç†‚É·‚µ‘Ö‚¦‚Ä•Û‘¶
+//å£ç´™ç”»åƒèª­ã¿è¾¼ã¿
+//ä¸‡ãŒä¸€ã«å‚™ãˆã¦passãŒç„¡è¨˜å…¥ã§ä¿å­˜ã•ã‚Œã¦ã„ãŸå ´åˆãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå£ç´™ã«å·®ã—æ›¿ãˆã¦ä¿å­˜
 if wp_pass=""{
 	wp_pass="data/pic/default_wallpaper.jpg"
 	notesel set2_ini
@@ -351,32 +373,32 @@ if wp_pass=""{
 	
 }
 
-//•Ç†İ’è
+//å£ç´™è¨­å®š
 exist wp_pass
-if strsize<0:dialog"‰æ‘œƒtƒ@ƒCƒ‹‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½\n‰Šúİ’è‚É•ÏX‚µ‚Ü‚·",1,"ƒGƒ‰[":wp_pass="data/pic/default_wallpaper.jpg"
+if strsize<0:dialog"ç”»åƒãƒ•ã‚¡ã‚¤ãƒ«ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã§ã—ãŸ\nåˆæœŸè¨­å®šã«å¤‰æ›´ã—ã¾ã™",1,"ã‚¨ãƒ©ãƒ¼":wp_pass="data/pic/default_wallpaper.jpg"
 buffer 11
 picload wp_pass
-//ƒuƒŒƒ“ƒh‚·‚é•boxf
+//ãƒ–ãƒ¬ãƒ³ãƒ‰ã™ã‚‹é»’boxf
 buffer 12,400,230 : boxf
 
-//ƒe[ƒ}ƒtƒ@ƒCƒ‹(.spt)‚É‰æ‘œ‚ªİ’è‚³‚ê‚Ä‚¢‚½‚ç
-//‚»‚Ì‰æ‘œ‚ğ“Ç‚İ‚Ş
+//ãƒ†ãƒ¼ãƒãƒ•ã‚¡ã‚¤ãƒ«(.spt)ã«ç”»åƒãŒè¨­å®šã•ã‚Œã¦ã„ãŸã‚‰
+//ãã®ç”»åƒã‚’èª­ã¿è¾¼ã‚€
 if spt_bi_data!""{
 buffer 13,400,250
 picload "data/theme/image/"+spt_bi_data+""
 }
 
-//ƒƒCƒ“ƒ^ƒu’Ç‰Á
-tab_name="ƒƒCƒ“"
+//ãƒ¡ã‚¤ãƒ³ã‚¿ãƒ–è¿½åŠ 
+tab_name="ãƒ¡ã‚¤ãƒ³"
 nkfcnv tab_name,tab_name,"Ws"
 InsertTab tab_name
 
 
-//”wŒiF
+//èƒŒæ™¯è‰²
 color int(spt_bc(0)),int(spt_bc(1)),int(spt_bc(2)):boxf
 
-//”wŒi‰æ‘œ
-//‰æ‘œ‚ª‚ ‚éê‡‚Ì‚İ•\¦
+//èƒŒæ™¯ç”»åƒ
+//ç”»åƒãŒã‚ã‚‹å ´åˆã®ã¿è¡¨ç¤º
 if spt_bi_data!""{
 pos 0,0
 gcopy 13,0,0,400,230
@@ -384,31 +406,31 @@ gmode 3,400,230,spt_bi_tp
 pos 0,0
 gcopy 12,0,0,400,230
 }
-//•¶šF
+//æ–‡å­—è‰²
 color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
 
 
-font "IPAexƒSƒVƒbƒN",16
+font "IPAexã‚´ã‚·ãƒƒã‚¯",16
 
 
 objsize 300,30
 pos 85,25
-mes "‰Šúİ’è‚ğŠ®—¹‚³‚¹‚Ä‚­‚¾‚³‚¢"
+mes "åˆæœŸè¨­å®šã‚’å®Œäº†ã•ã›ã¦ãã ã•ã„"
 
 
 pos 50,70
-button goto"Spotify‚Ì”FØ",*spotify_authorize
+button goto"Spotifyã®èªè¨¼",*spotify_authorize
 pos 50,115
-button goto"Twitter‚Ì”FØ",*twitter_authorize
+button goto"Twitterã®èªè¨¼",*twitter_authorize
 pos 50,160
-button goto"—˜—pŠJn",*start
+button goto"åˆ©ç”¨é–‹å§‹",*start
 
 
-if spotify_setup_flag=1:objprm 0,"Spotify‚Í”FØÏ‚İ‚Å‚·":objenable 0,0
-if twitter_setup_flag=1:objprm 1,"Twitter‚Í”FØÏ‚İ‚Å‚·":objenable 1,0
+if spotify_setup_flag=1:objprm 0,"Spotifyã¯èªè¨¼æ¸ˆã¿ã§ã™":objenable 0,0
+if twitter_setup_flag=1:objprm 1,"Twitterã¯èªè¨¼æ¸ˆã¿ã§ã™":objenable 1,0
 
 
-tab_name="İ’è1"
+tab_name="è¨­å®š1"
 nkfcnv tab_name,tab_name,"Ws"
 InsertTab tab_name
 
@@ -427,55 +449,55 @@ color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
 mesbox tweet_data,392,90,1,500
 
 
-font "IPAexƒSƒVƒbƒN",13
+font "IPAexã‚´ã‚·ãƒƒã‚¯",13
 
 
 pos 0,110
 input track_name_data,100,18
 pos 0,93
-mes "Šy‹È–¼"
+mes "æ¥½æ›²å"
 
 
 pos 0,150
 input artist_name_data,100,18
 pos 0,133
-mes "ƒA[ƒeƒBƒXƒg–¼"
+mes "ã‚¢ãƒ¼ãƒ†ã‚£ã‚¹ãƒˆå"
 
 
 pos 120,110
 input album_name_data,100,18
 pos 120,93
-mes "ƒAƒ‹ƒoƒ€–¼"
+mes "ã‚¢ãƒ«ãƒãƒ å"
 
 
 pos 120,150
 input track_url_data,100,18
 pos 120,133
-mes "Šy‹È‚ÌURL"
+mes "æ¥½æ›²ã®URL"
 
 pos 240,110
 input artist_pun,147,18
 pos 240,93
-mes "ƒA[ƒeƒBƒXƒg‹æØ‚è•¶š"
+mes "ã‚¢ãƒ¼ãƒ†ã‚£ã‚¹ãƒˆåŒºåˆ‡ã‚Šæ–‡å­—"
 
 pos 240,150
 input discord_cmd,147,18
 pos 240,133
-mes "DiscordƒRƒ}ƒ“ƒh"
+mes "Discordã‚³ãƒãƒ³ãƒ‰"
 
-font "IPAexƒSƒVƒbƒN",12
+font "IPAexã‚´ã‚·ãƒƒã‚¯",12
 pos 40,205
-mes "İ’è‚ÍƒƒCƒ“ƒEƒBƒ“ƒhƒE‚ÖˆÚ“®‚µ‚È‚¢ŒÀ‚è”½‰f‚³‚ê‚Ü‚¹‚ñ"
+mes "è¨­å®šã¯ãƒ¡ã‚¤ãƒ³ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã¸ç§»å‹•ã—ãªã„é™ã‚Šåæ˜ ã•ã‚Œã¾ã›ã‚“"
 
 
-//•ÒW•s‰ÂƒIƒuƒWƒFƒNƒg‚É•ÏŠ·
+//ç·¨é›†ä¸å¯ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«å¤‰æ›
 sendmsg objinfo(1,2),$CF,1
 sendmsg objinfo(2,2),$CF,1
 sendmsg objinfo(3,2),$CF,1
 sendmsg objinfo(4,2),$CF,1
 
 
-tab_name="İ’è2"
+tab_name="è¨­å®š2"
 nkfcnv tab_name,tab_name,"Ws"
 InsertTab tab_name
 
@@ -491,10 +513,10 @@ gcopy 12,0,0,400,230
 color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
 
 
-font "IPAexƒSƒVƒbƒN",15
+font "IPAexã‚´ã‚·ãƒƒã‚¯",15
 
 /*pos 2,2
-mes "•Ç†‰æ‘œ(Ä‹N“®‚É“K—p‚³‚ê‚Ü‚·)"
+mes "å£ç´™ç”»åƒ(å†èµ·å‹•æ™‚ã«é©ç”¨ã•ã‚Œã¾ã™)"
 input wp_pass,300,20*/
 
 
@@ -502,58 +524,58 @@ objsize 12,12
 pos 5,48
 chkbox "",auto_tweet_sw
 pos 27,46
-mes "©“®ƒcƒC[ƒg‚ğ–³Œø"
+mes "è‡ªå‹•ãƒ„ã‚¤ãƒ¼ãƒˆã‚’ç„¡åŠ¹"
 
 objsize 12,12
 pos 195,48
 chkbox "",artwork_switch
 pos 215,47
-mes "ƒA[ƒgƒ[ƒN‚ğ“Še‚·‚é"
+mes "ã‚¢ãƒ¼ãƒˆãƒ¯ãƒ¼ã‚¯ã‚’æŠ•ç¨¿ã™ã‚‹"
 
 /*objsize 12,12
 pos 175,72
 chkbox "",wp_artwork
 pos 200,72
-mes "ƒA[ƒgƒ[ƒN‚ğ•Ç†‚É‚·‚é"*/
+mes "ã‚¢ãƒ¼ãƒˆãƒ¯ãƒ¼ã‚¯ã‚’å£ç´™ã«ã™ã‚‹"*/
 wp_artwork = 1
 
 objsize 12,12
 pos 5,72
 chkbox "",overtweet_switch
 pos 28,71
-mes "‚ğ‘}“ü‚·‚é"
+mes "æ™‚åˆ»ã‚’æŒ¿å…¥ã™ã‚‹"
 
 objsize 12,12
 pos 5,98
 chkbox "",window_active
 pos 25,97
-mes "ƒEƒBƒ“ƒhƒE‚ğÅ‘O–Ê‚É‚·‚é"
+mes "ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’æœ€å‰é¢ã«ã™ã‚‹"
 
 objsize 200,30
 pos 25,15
-mes "ƒe[ƒ}(—vÄ‹N“®)"
+mes "ãƒ†ãƒ¼ãƒ(è¦å†èµ·å‹•)"
 pos 160,12
 combox theme_list_num,,theme_list
 
 /*pos 200,70
-mes "Œ¾Œê(–¢À‘•)"
+mes "è¨€èª(æœªå®Ÿè£…)"
 pos 200,90
 combox language_list_num,,language_list*/
 
 /*objsize 80,20
 pos 307,18
-button goto"QÆ",*wp_pass_d*/
+button goto"å‚ç…§",*wp_pass_d*/
 
 objsize 392,25
 pos 0,199
-button goto"‘Sİ’è‰Šú‰»",*set_initialization
+button goto"å…¨è¨­å®šåˆæœŸåŒ–",*set_initialization
 
-/*font "IPAexƒSƒVƒbƒN",12
+/*font "IPAexã‚´ã‚·ãƒƒã‚¯",12
 pos 42,185
-mes "İ’è‚ÍMainƒEƒBƒ“ƒhƒE‚ÖˆÚ“®‚µ‚È‚¢ŒÀ‚è•Û‘¶‚³‚ê‚Ü‚¹‚ñ"*/
+mes "è¨­å®šã¯Mainã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã¸ç§»å‹•ã—ãªã„é™ã‚Šä¿å­˜ã•ã‚Œã¾ã›ã‚“"*/
 
 
-tab_name="ƒAƒJƒEƒ“ƒgİ’è"
+tab_name="ã‚¢ã‚«ã‚¦ãƒ³ãƒˆè¨­å®š"
 nkfcnv tab_name,tab_name,"Ws"
 InsertTab tab_name
 
@@ -569,36 +591,36 @@ gcopy 12,0,0,400,230
 color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
 
 pos 3,3
-font "IPAexƒSƒVƒbƒN",15
-mes "ƒAƒJƒEƒ“ƒgˆê——(@id)"
+font "IPAexã‚´ã‚·ãƒƒã‚¯",15
+mes "ã‚¢ã‚«ã‚¦ãƒ³ãƒˆä¸€è¦§(@id)"
 objsize 385,20
 combox twitter_user_num,150,twitter_user_list
 
-font "IPAexƒSƒVƒbƒN",13
+font "IPAexã‚´ã‚·ãƒƒã‚¯",13
 pos 5,180
 
 if account_default=""{
-	mes "ƒAƒJƒEƒ“ƒg‚ª“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ"
+	mes "ã‚¢ã‚«ã‚¦ãƒ³ãƒˆãŒç™»éŒ²ã•ã‚Œã¦ã„ã¾ã›ã‚“"
 }else{
-	mes "Œ»İg—p’†‚ÌƒAƒJƒEƒ“ƒg : @"+account_default
+	mes "ç¾åœ¨ä½¿ç”¨ä¸­ã®ã‚¢ã‚«ã‚¦ãƒ³ãƒˆ : @"+account_default
 }
 
 objsize 100,20
 pos 5,200
-button goto"ƒAƒJƒEƒ“ƒg’Ç‰Á",*twitter_authorize_p
+button goto"ã‚¢ã‚«ã‚¦ãƒ³ãƒˆè¿½åŠ ",*twitter_authorize_p
 
 objsize 100,20
 pos 110,200
-button goto"ƒAƒJƒEƒ“ƒgíœ",*delete_twitter
+button goto"ã‚¢ã‚«ã‚¦ãƒ³ãƒˆå‰Šé™¤",*delete_twitter
 
 objsize 100,20
 pos 287,200
-button goto"‚±‚ÌƒAƒJƒEƒ“ƒg‚ğg‚¤",*twitter_decision
+button goto"ã“ã®ã‚¢ã‚«ã‚¦ãƒ³ãƒˆã‚’ä½¿ã†",*twitter_decision
 
 if twitter_user_list="":gsel 4:objenable 2,0:objenable 3,0
 
 
-tab_name="î•ñ"
+tab_name="æƒ…å ±"
 nkfcnv tab_name,tab_name,"Ws"
 InsertTab tab_name
 
@@ -618,17 +640,17 @@ pos 10,40
 picload "data/pic/swonpy_logo_info.png",1
 
 
-font "IPAexƒSƒVƒbƒN",30
+font "IPAexã‚´ã‚·ãƒƒã‚¯",30
 pos 178,85
 mes "Snowpy"
 
 
-font "IPAexƒSƒVƒbƒN",14
+font "IPAexã‚´ã‚·ãƒƒã‚¯",14
 pos 298,100
 mes "Ver. 1.35"
 
 
-font "IPAexƒSƒVƒbƒN",12
+font "IPAexã‚´ã‚·ãƒƒã‚¯",12
 pos 180,130
 mes "Developed by Cube"
 
@@ -653,27 +675,27 @@ gsel
 oncmd gosub *change_tab, $4E
 
 
-//‚Ç‚Á‚¿‚Æ‚à”FØÏ‚İ‚¾‚Á‚½‚ç‚»‚Ì‚Ü‚ÜÀs
+//ã©ã£ã¡ã¨ã‚‚èªè¨¼æ¸ˆã¿ã ã£ãŸã‚‰ãã®ã¾ã¾å®Ÿè¡Œ
 if spotify_setup_flag=1&twitter_setup_flag=1:goto,*start
 stop
 
-////////////////////////////////////////////////////////////////////////‚±‚±‚Ü‚Å///////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////ã“ã“ã¾ã§///////////////////////////////////////////////////////////////////////
 
 *spotify_authorize
 
-//”FØ‰æ–Ê‚ğƒuƒ‰ƒEƒU‚ÅŠJ‚­
+//èªè¨¼ç”»é¢ã‚’ãƒ–ãƒ©ã‚¦ã‚¶ã§é–‹ã
 exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_type=code&redirect_uri="+redirect_url+"&scope=user-read-playback-state user-modify-playback-state",16
 
 *s_get_code_authorize
 
-	//http://localhost:12001‚ÌƒT[ƒo‚ğİ’u
+	//http://localhost:12001ã®ã‚µãƒ¼ãƒã‚’è¨­ç½®
 	
 	sockmake 0,12001
 	
-	//ƒGƒ‰[ˆ—
-	if stat=1:dialog"TCP/IP‚ªWindows‚ÉƒCƒ“ƒXƒg[ƒ‹‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ\nƒCƒ“ƒXƒg[ƒ‹‚µ‚Ä‚­‚¾‚³‚¢":end
-	if stat=2:dialog"ƒ\ƒPƒbƒg‚Ì‰Šú‰»‚É¸”s‚µ‚Ü‚µ‚½\n‚à‚¤ˆê“xÀs‚µ‚Ü‚·\n‰½“x‚à¸”s‚·‚éê‡‚ÍŠJ”­Ò‚Ü‚Å‚¨–â‚¢‡‚í‚¹‚­‚¾‚³‚¢":goto,*s_get_code_authorize
-	if stat=3:dialog"Socket‚ÌƒoƒCƒ“ƒh‚É¸”s‚µ‚Ü‚µ‚½\n‚à‚¤ˆê“xÀs‚µ‚Ü‚·\n‰½“x‚à¸”s‚·‚éê‡‚ÍŠJ”­Ò‚Ü‚Å‚¨–â‚¢‡‚í‚¹‚­‚¾‚³‚¢":goto,*s_get_code_authorize
+	//ã‚¨ãƒ©ãƒ¼å‡¦ç†
+	if stat=1:dialog"TCP/IPãŒWindowsã«ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã•ã‚Œã¦ã„ã¾ã›ã‚“\nã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã—ã¦ãã ã•ã„":end
+	if stat=2:dialog"ã‚½ã‚±ãƒƒãƒˆã®åˆæœŸåŒ–ã«å¤±æ•—ã—ã¾ã—ãŸ\nã‚‚ã†ä¸€åº¦å®Ÿè¡Œã—ã¾ã™\nä½•åº¦ã‚‚å¤±æ•—ã™ã‚‹å ´åˆã¯é–‹ç™ºè€…ã¾ã§ãŠå•ã„åˆã‚ã›ãã ã•ã„":goto,*s_get_code_authorize
+	if stat=3:dialog"Socketã®ãƒã‚¤ãƒ³ãƒ‰ã«å¤±æ•—ã—ã¾ã—ãŸ\nã‚‚ã†ä¸€åº¦å®Ÿè¡Œã—ã¾ã™\nä½•åº¦ã‚‚å¤±æ•—ã™ã‚‹å ´åˆã¯é–‹ç™ºè€…ã¾ã§ãŠå•ã„åˆã‚ã›ãã ã•ã„":goto,*s_get_code_authorize
 
 	repeat
 	sockwait 0
@@ -681,7 +703,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	wait 1
 	loop
 
-	//•Ô‚Á‚Ä‚«‚½ƒR[ƒh‚ğæ“¾
+	//è¿”ã£ã¦ããŸã‚³ãƒ¼ãƒ‰ã‚’å–å¾—
 	sockget code_authorize,247,0
 
 	sockclose 0
@@ -708,23 +730,23 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	
 	netterm
 	
-	dialog "”FØ‚ªŠ®—¹‚µ‚Ü‚µ‚½\nŠJ‚©‚ê‚½ƒ^ƒu‚Í•Â‚¶‚Ä‚­‚¾‚³‚¢"
+	dialog "èªè¨¼ãŒå®Œäº†ã—ã¾ã—ãŸ\né–‹ã‹ã‚ŒãŸã‚¿ãƒ–ã¯é–‰ã˜ã¦ãã ã•ã„"
 	
-	//ƒAƒNƒZƒXƒg[ƒNƒ“‚ÆƒŠƒtƒŒƒbƒVƒ…ƒg[ƒNƒ“‚ğæ‚èo‚·
+	//ã‚¢ã‚¯ã‚»ã‚¹ãƒˆãƒ¼ã‚¯ãƒ³ã¨ãƒªãƒ•ãƒ¬ãƒƒã‚·ãƒ¥ãƒˆãƒ¼ã‚¯ãƒ³ã‚’å–ã‚Šå‡ºã™
 	jsonopen pti_json,token_authorization
 	jsongets access_token,"access_token",pti_json
 	jsongets refresh_token,"refresh_token",pti_json
 	jsonclose
 
-	//ƒg[ƒNƒ“‚ğ•Û‘¶—p‚ÉƒZƒbƒg
+	//ãƒˆãƒ¼ã‚¯ãƒ³ã‚’ä¿å­˜ç”¨ã«ã‚»ãƒƒãƒˆ
 	s_token_set=""+access_token+"\n"+refresh_token+""
 
-	//ƒg[ƒNƒ“‚Ì•Û‘¶
+	//ãƒˆãƒ¼ã‚¯ãƒ³ã®ä¿å­˜
 	exist"data/api/s_access_token"
 	if strsize>0:delete"data/api/s_access_token"
 	bsave "data/api/s_access_token",s_token_set,strlen(s_token_set)
 
-	//setupÏ‚İflag‚ğ•Û‘¶
+	//setupæ¸ˆã¿flagã‚’ä¿å­˜
 	spotify_setup_flag=1
 	spotify_setup_flag=str(spotify_setup_flag)
 	exist"data/ini/spotify_setup"
@@ -733,13 +755,13 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	spotify_setup_flag=int(spotify_setup_flag)
 	
 	gsel 1
-	objprm 0,"Spotify‚Í”FØÏ‚İ‚Å‚·":objenable 0,0
+	objprm 0,"Spotifyã¯èªè¨¼æ¸ˆã¿ã§ã™":objenable 0,0
 	stop
 
 
 *twitter_authorize
 
-	//TsubuyakiSoup.mod‚ğg—p
+	//TsubuyakiSoup.modã‚’ä½¿ç”¨
 
 	tCupInit"testClient",consumer_key,consumer_secret,10
 	t_address = getAuthorizeAddress()
@@ -747,10 +769,10 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 
 	screen 50,200,100,8
 	gsel 50,2
-	title"PIN‚Ì“ü—Í"
+	title"PINã®å…¥åŠ›"
 	
 	pos 15,10
-	mes "PIN‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢"
+	mes "PINã‚’å…¥åŠ›ã—ã¦ãã ã•ã„"
 	pos 50,35
 	input tapin,100,20
 	pos 67,60
@@ -759,7 +781,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 
 *t_get_access_token
 
-	if tapin="":dialog "PIN‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢":stop
+	if tapin="":dialog "PINã‚’å…¥åŠ›ã—ã¦ãã ã•ã„":stop
 	
 	publishAccessToken t_access_token,t_access_secret,t_userdata,tapin
 	
@@ -792,11 +814,11 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	if strsize>0:delete"data/ini/accountset"
 	bsave "data/ini/accountset",t_userdata,strlen(t_userdata)
 
-	dialog "’Ç‰Á”FØ‚ªŠ®—¹‚µ‚Ü‚µ‚½\nŠJ‚©‚ê‚½ƒ^ƒu‚Í•Â‚¶‚Ä‚­‚¾‚³‚¢"
+	dialog "è¿½åŠ èªè¨¼ãŒå®Œäº†ã—ã¾ã—ãŸ\né–‹ã‹ã‚ŒãŸã‚¿ãƒ–ã¯é–‰ã˜ã¦ãã ã•ã„"
 
 	gsel 50,-1
 
-	//setupÏ‚İflag‚ğ•Û‘¶
+	//setupæ¸ˆã¿flagã‚’ä¿å­˜
 	twitter_setup_flag=1
 	twitter_setup_flag=str(twitter_setup_flag)
 	exist"data/ini/twitter_setup"
@@ -807,7 +829,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	tapin=""
 
 	gsel 1
-	if twitter_setup_flag=1:objprm 1,"Twitter‚Í”FØÏ‚İ‚Å‚·":objenable 1,0
+	if twitter_setup_flag=1:objprm 1,"Twitterã¯èªè¨¼æ¸ˆã¿ã§ã™":objenable 1,0
 	gsel 4:objenable 2,1:objenable 3,1
 	
 	stop
@@ -818,9 +840,9 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 
 	color 255,255,255
 	
-	if spotify_setup_flag=0&twitter_setup_flag=0:dialog "”FØ‚ğ‚µ‚Ä‚©‚ç—˜—pŠJn‚µ‚Ä‚­‚¾‚³‚¢":stop
-	if spotify_setup_flag=0:dialog "Spotify‚Ì”FØ‚ğs‚Á‚Ä‚­‚¾‚³‚¢":stop
-	if twitter_setup_flag=0:dialog "Twitter‚Ì”FØ‚ğs‚Á‚Ä‚­‚¾‚³‚¢":stop
+	if spotify_setup_flag=0&twitter_setup_flag=0:dialog "èªè¨¼ã‚’ã—ã¦ã‹ã‚‰åˆ©ç”¨é–‹å§‹ã—ã¦ãã ã•ã„":stop
+	if spotify_setup_flag=0:dialog "Spotifyã®èªè¨¼ã‚’è¡Œã£ã¦ãã ã•ã„":stop
+	if twitter_setup_flag=0:dialog "Twitterã®èªè¨¼ã‚’è¡Œã£ã¦ãã ã•ã„":stop
 
 	tweet_data_c=tweet_data
 	tweet_data_s=tweet_data
@@ -838,13 +860,13 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 
 	/*objsize 393,23
 	pos 0,137
-	button goto"Šy‹È‚ÌÚ×ƒy[ƒW‚ğŠJ‚­",*open_track_url
+	button goto"æ¥½æ›²ã®è©³ç´°ãƒšãƒ¼ã‚¸ã‚’é–‹ã",*open_track_url
 	pos 0,159
-	button goto"è“®‚Å‚Â‚Ô‚â‚­",*tweet_spotify_info
+	button goto"æ‰‹å‹•ã§ã¤ã¶ã‚„ã",*tweet_spotify_info
 	pos 0,181
-	button goto"Discord‚É‘—M",*discord_bot
+	button goto"Discordã«é€ä¿¡",*discord_bot
 	pos 0,201
-	button goto"“®ì’â~",*do_stop*/
+	button goto"å‹•ä½œåœæ­¢",*do_stop*/
 
 	gsel 4:objenable 0,0
 	gsel 4:objenable 1,0
@@ -878,11 +900,11 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 		gcopy 12,0,0,400,137
 
 		color 255,255,255
-		font "IPAexƒSƒVƒbƒN",13
+		font "IPAexã‚´ã‚·ãƒƒã‚¯",13
 		pos 123,5
-		mes "Šy‹È‚ÌÚ×ƒy[ƒW‚ğŠJ‚­"
+		mes "æ¥½æ›²ã®è©³ç´°ãƒšãƒ¼ã‚¸ã‚’é–‹ã"
 		pos 516,5
-		mes "Šy‹È‚ÌÚ×ƒy[ƒW‚ğŠJ‚­"
+		mes "æ¥½æ›²ã®è©³ç´°ãƒšãƒ¼ã‚¸ã‚’é–‹ã"
 
 		gsel 1
 		
@@ -902,11 +924,11 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 		gcopy 12,0,0,400,137
 
 		color 255,255,255
-		font "IPAexƒSƒVƒbƒN",13
+		font "IPAexã‚´ã‚·ãƒƒã‚¯",13
 		pos 149,5
-		mes "è“®‚Å‚Â‚Ô‚â‚­"
+		mes "æ‰‹å‹•ã§ã¤ã¶ã‚„ã"
 		pos 542,5
-		mes "è“®‚Å‚Â‚Ô‚â‚­"
+		mes "æ‰‹å‹•ã§ã¤ã¶ã‚„ã"
 
 		gsel 1
 		
@@ -926,11 +948,11 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 		gcopy 12,0,0,400,137
 
 		color 255,255,255
-		font "IPAexƒSƒVƒbƒN",13
+		font "IPAexã‚´ã‚·ãƒƒã‚¯",13
 		pos 149,4
-		mes "Discord‚É‘—M"
+		mes "Discordã«é€ä¿¡"
 		pos 542,4
-		mes "Discord‚É‘—M"
+		mes "Discordã«é€ä¿¡"
 
 		gsel 1
 		
@@ -950,11 +972,11 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 		gcopy 12,0,0,400,137
 
 		color 255,255,255
-		font "IPAexƒSƒVƒbƒN",13
+		font "IPAexã‚´ã‚·ãƒƒã‚¯",13
 		pos 166,5
-		mes "“®ì’â~"
+		mes "å‹•ä½œåœæ­¢"
 		pos 559,5
-		mes "“®ì’â~"
+		mes "å‹•ä½œåœæ­¢"
 
 		gsel 1
 		
@@ -982,19 +1004,19 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	randomize
 	
 	/***********************************************************************
-	ƒƒCƒ“ƒ‹[ƒv
+	ãƒ¡ã‚¤ãƒ³ãƒ«ãƒ¼ãƒ—
 	
-	Å‰‚ÉŠy‹Èî•ñ‚ğæ“¾‚µ‚»‚ÌŸ‚É•¶š‚ğ“Á’è‚ÌŠÔƒXƒNƒ[ƒ‹‚³‚¹‚Ü‚·
-	ŠeX‚Ì•¶š‚ÌƒTƒCƒY‚ğƒsƒNƒZƒ‹’PˆÊ‚Åæ“¾‚µ
-	æ“¾‚µ‚½•¶š‚Ò‚Á‚½‚è‚ÌƒTƒCƒY‚Ìƒoƒbƒtƒ@‚ğì‚ègmode‚ÅRGB"0"(‚Â‚Ü‚è^‚Á•)‚ğ
-	“§–¾F‚Æ‚µ‚ÄAgcopy‚ÅwindowID 1 ‚É•`‰æ‚³‚¹‚Ä‚¢‚Ü‚·
-	Ú‚µ‚¢à–¾‚Í•Ê“r‚Ìhspƒtƒ@ƒCƒ‹‚ÉÚ‚Á‚Ä‚¢‚Ü‚·‚Ì‚Å‚»‚¿‚ç‚ğŒä——‚­‚¾‚³‚¢
+	æœ€åˆã«æ¥½æ›²æƒ…å ±ã‚’å–å¾—ã—ãã®æ¬¡ã«æ–‡å­—ã‚’ç‰¹å®šã®æ™‚é–“ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ã•ã›ã¾ã™
+	å„ã€…ã®æ–‡å­—ã®ã‚µã‚¤ã‚ºã‚’ãƒ”ã‚¯ã‚»ãƒ«å˜ä½ã§å–å¾—ã—
+	å–å¾—ã—ãŸæ–‡å­—ã´ã£ãŸã‚Šã®ã‚µã‚¤ã‚ºã®ãƒãƒƒãƒ•ã‚¡ã‚’ä½œã‚Šgmodeã§RGB"0"(ã¤ã¾ã‚ŠçœŸã£é»’)ã‚’
+	é€æ˜è‰²ã¨ã—ã¦ã€gcopyã§windowID 1 ã«æç”»ã•ã›ã¦ã„ã¾ã™
+	è©³ã—ã„èª¬æ˜ã¯åˆ¥é€”ã®hspãƒ•ã‚¡ã‚¤ãƒ«ã«è¼‰ã£ã¦ã„ã¾ã™ã®ã§ãã¡ã‚‰ã‚’å¾¡è¦§ãã ã•ã„
 	***********************************************************************/
 	
-*main//ƒƒCƒ“ƒ‹[ƒv
+*main//ãƒ¡ã‚¤ãƒ³ãƒ«ãƒ¼ãƒ—
 
-	//3•b‚²‚Æ‚ÉŠy‹Èî•ñ‚ğAPI‚Åæ“¾
-	//wait 1‚ğ‹²‚ñ‚Å‚¢‚é‚Ì‚Å 1•b = 100 ‚É‚È‚é
+	//3ç§’ã”ã¨ã«æ¥½æ›²æƒ…å ±ã‚’APIã§å–å¾—
+	//wait 1ã‚’æŒŸã‚“ã§ã„ã‚‹ã®ã§ 1ç§’ = 100 ã«ãªã‚‹
 
 	if window_active=1:gsel 0,2:else:gsel 0,1
 
@@ -1011,66 +1033,66 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 		if mea_cnt=0{
 
 		if track_name!""{
-			buffer 16//ƒsƒNƒZƒ‹ƒTƒCƒYŒv‘ª—pƒoƒbƒtƒ@
+			buffer 16//ãƒ”ã‚¯ã‚»ãƒ«ã‚µã‚¤ã‚ºè¨ˆæ¸¬ç”¨ãƒãƒƒãƒ•ã‚¡
 			color 0,0,0:boxf:color 255,255,255
-			font "IPAexƒSƒVƒbƒN",13
+			font "IPAexã‚´ã‚·ãƒƒã‚¯",13
 			mes track_name
 			track_name_x=ginfo_mesx
 			track_name_y=ginfo_mesy
 		}
 
 		if artist_name!""{
-			buffer 16//ƒsƒNƒZƒ‹ƒTƒCƒYŒv‘ª—pƒoƒbƒtƒ@
+			buffer 16//ãƒ”ã‚¯ã‚»ãƒ«ã‚µã‚¤ã‚ºè¨ˆæ¸¬ç”¨ãƒãƒƒãƒ•ã‚¡
 			color 0,0,0:boxf:color 255,255,255
-			font "IPAexƒSƒVƒbƒN",13
+			font "IPAexã‚´ã‚·ãƒƒã‚¯",13
 			mes artist_name_all
 			artist_name_x=ginfo_mesx
 			artist_name_y=ginfo_mesy
 		}
 
 		if album_name!""{
-			buffer 16//ƒsƒNƒZƒ‹ƒTƒCƒYŒv‘ª—pƒoƒbƒtƒ@
+			buffer 16//ãƒ”ã‚¯ã‚»ãƒ«ã‚µã‚¤ã‚ºè¨ˆæ¸¬ç”¨ãƒãƒƒãƒ•ã‚¡
 			color 0,0,0:boxf:color 255,255,255
-			font "IPAexƒSƒVƒbƒN",13
+			font "IPAexã‚´ã‚·ãƒƒã‚¯",13
 			mes album_name
 			album_name_x=ginfo_mesx
 			album_name_y=ginfo_mesy
 		}
 	
-		//Šy‹È–¼‚ğƒoƒbƒtƒ@‚É•`‰æ
-		//”wŒi‚Í• (RGB ALL"0")
+		//æ¥½æ›²åã‚’ãƒãƒƒãƒ•ã‚¡ã«æç”»
+		//èƒŒæ™¯ã¯é»’ (RGB ALL"0")
 		if track_name!""{
 			buffer 30,track_name_x,track_name_y
 			color 0,0,0:boxf:color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
-			font "IPAexƒSƒVƒbƒN",13
+			font "IPAexã‚´ã‚·ãƒƒã‚¯",13
 			mes track_name
 		}
 	
-		//Šy‹È–¼‚ğƒoƒbƒtƒ@‚É•`‰æ
-		//”wŒi‚Í• (RGB ALL"0")
+		//æ¥½æ›²åã‚’ãƒãƒƒãƒ•ã‚¡ã«æç”»
+		//èƒŒæ™¯ã¯é»’ (RGB ALL"0")
 		if artist_name!""{
 			buffer 31,artist_name_x,artist_name_y
 			color 0,0,0:boxf:color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
-			font "IPAexƒSƒVƒbƒN",13
+			font "IPAexã‚´ã‚·ãƒƒã‚¯",13
 			mes artist_name_all
 		}
 	
-		//Šy‹È–¼‚ğƒoƒbƒtƒ@‚É•`‰æ
-		//”wŒi‚Í• (RGB ALL"0")
+		//æ¥½æ›²åã‚’ãƒãƒƒãƒ•ã‚¡ã«æç”»
+		//èƒŒæ™¯ã¯é»’ (RGB ALL"0")
 		if album_name!""{
 			buffer 32,album_name_x,album_name_y
 			color 0,0,0:boxf:color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
-			font "IPAexƒSƒVƒbƒN",13
+			font "IPAexã‚´ã‚·ãƒƒã‚¯",13
 			mes album_name
 		}
 	
 			gsel 1
-			//ƒXƒNƒ[ƒ‹‚ÌãŒÀ’l
+			//ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ã®ä¸Šé™å€¤
 			track_name_x_limit=track_name_x
 			artist_name_x_limit=artist_name_x
 			album_name_x_limit=album_name_x
 	
-			//max_sizet‚ÉxƒTƒCƒY‚ÌÅ‘å’l‚ğŠi”[
+			//max_sizetã«xã‚µã‚¤ã‚ºã®æœ€å¤§å€¤ã‚’æ ¼ç´
 			if track_name_x_limit<artist_name_x_limit{
 				max_sizet=artist_name_x_limit
 			}else{
@@ -1079,17 +1101,17 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	
 			if max_sizet<album_name_x_limit:max_sizet=album_name_x_limit
 	
-			//Œv‘ªÏ‚İ
+			//è¨ˆæ¸¬æ¸ˆã¿
 			mea_cnt=1
 	
 		}
 	
 		redraw 0,0,0,400,138
 	
-		//‰æ–Êã•”•\¦‰Šú‰»
+		//ç”»é¢ä¸Šéƒ¨è¡¨ç¤ºåˆæœŸåŒ–
 		color 255,255,255:boxf 0,0,400,137
 	
-		//•Ç†‚ğİ’è
+		//å£ç´™ã‚’è¨­å®š
 		if wp_artwork=0{
 			pos 0,0
 			gcopy 13,0,0,400,250
@@ -1116,22 +1138,22 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 		}
 		line 0,135,progress_bar_rb,135
 	
-		font "IPAexƒSƒVƒbƒN",25
+		font "IPAexã‚´ã‚·ãƒƒã‚¯",25
 		pos 130,20
 		//color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
 		mes "NowPlaying"
 	
-		font "IPAexƒSƒVƒbƒN",13
+		font "IPAexã‚´ã‚·ãƒƒã‚¯",13
 		pos 130,60
 		//color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
 		mes "Track:"
 	
-		font "IPAexƒSƒVƒbƒN",13
+		font "IPAexã‚´ã‚·ãƒƒã‚¯",13
 		pos 130,85
 		//color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
 		mes "Artist:"
 	
-		font "IPAexƒSƒVƒbƒN",13
+		font "IPAexã‚´ã‚·ãƒƒã‚¯",13
 		pos 130,110
 		//color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
 		mes "Album:"
@@ -1279,10 +1301,10 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 		pos 9,14
 		gzoom 108,108,20,0,0,640,640,1
 
-		font "IPAexƒSƒVƒbƒN",25
+		font "IPAexã‚´ã‚·ãƒƒã‚¯",25
 
 		pos 195,55://color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
-		mes "LÄ¶’†"
+		mes "åºƒå‘Šå†ç”Ÿä¸­"
 
 	}
 
@@ -1310,7 +1332,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 
 	netgetv playing_track_info
 	
-	if playing_track_info="":/*dialog "Šy‹È‚ªÄ¶‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ"*/:goto,*do_stop
+	if playing_track_info="":/*dialog "æ¥½æ›²ãŒå†ç”Ÿã•ã‚Œã¦ã„ã¾ã›ã‚“"*/:goto,*do_stop
 
 	netterm
 
@@ -1341,8 +1363,8 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	}
 			
 
-	//ƒ[ƒJƒ‹ƒtƒ@ƒCƒ‹‚©‚Ç‚¤‚©
-	//ƒ[ƒJƒ‹ƒtƒ@ƒCƒ‹‚¾‚Á‚½ê‡ 1 ‚»‚¤‚Å‚È‚¯‚ê‚Î 0 ‚ª‘ã“ü‚³‚ê‚Ü‚·
+	//ãƒ­ãƒ¼ã‚«ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«ã‹ã©ã†ã‹
+	//ãƒ­ãƒ¼ã‚«ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«ã ã£ãŸå ´åˆ 1 ãã†ã§ãªã‘ã‚Œã° 0 ãŒä»£å…¥ã•ã‚Œã¾ã™
 	is_local=0
 	if instr(playing_track_info,0,"\"is_local\" : true,")!-1{
 		is_local=1
@@ -1350,7 +1372,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	
 	if do_restart=1{
 
-	//Še•Ï”‚Ì‰Šú‰»
+	//å„å¤‰æ•°ã®åˆæœŸåŒ–
 		main_loop_cnt=0
 		max_sizet=0
 		info_loop_cnt=0
@@ -1374,8 +1396,8 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 		do_restart=0
 	}
 
-	//ƒAƒNƒZƒXƒg[ƒNƒ“‚ÌŠúŒÀØ‚ê
-	//ƒŠƒtƒŒƒbƒVƒ…ƒg[ƒNƒ“‚ÅÄ”­s
+	//ã‚¢ã‚¯ã‚»ã‚¹ãƒˆãƒ¼ã‚¯ãƒ³ã®æœŸé™åˆ‡ã‚Œ
+	//ãƒªãƒ•ãƒ¬ãƒƒã‚·ãƒ¥ãƒˆãƒ¼ã‚¯ãƒ³ã§å†ç™ºè¡Œ
 	if instr(playing_track_info,0,"\"error\"")!-1{
 		netinit
 		neturl "https://accounts.spotify.com/api/"
@@ -1392,14 +1414,14 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 		netgetv token_authorization
 		netterm
 	
-		//ƒAƒNƒZƒXƒg[ƒNƒ“‚ÆƒŠƒtƒŒƒbƒVƒ…ƒg[ƒNƒ“‚ğæ‚èo‚·
+		//ã‚¢ã‚¯ã‚»ã‚¹ãƒˆãƒ¼ã‚¯ãƒ³ã¨ãƒªãƒ•ãƒ¬ãƒƒã‚·ãƒ¥ãƒˆãƒ¼ã‚¯ãƒ³ã‚’å–ã‚Šå‡ºã™
 		jsonopen pti_json,token_authorization
 		jsongets access_token,"access_token",pti_json
 		jsongets refresh_token,"refresh_token",pti_json
 
 		s_token_set=""+access_token+"\n"+refresh_token+""
 
-		//ƒg[ƒNƒ“‚Ì•Û‘¶
+		//ãƒˆãƒ¼ã‚¯ãƒ³ã®ä¿å­˜
 		exist"data/api/s_access_token"
 		if strsize>0:delete"data/api/s_access_token"
 		bsave "data/api/s_access_token",s_token_set,strlen(s_token_set)
@@ -1410,7 +1432,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 
 	artist_name_all=""
 	
-	//ˆÈ‰ºJSON‚©‚çƒf[ƒ^ˆø‚«”²‚«
+	//ä»¥ä¸‹JSONã‹ã‚‰ãƒ‡ãƒ¼ã‚¿å¼•ãæŠœã
 	jsonopen pti_json(0),playing_track_info
 	jsongetobj pti_json(0),"item",pti_json(0)
 	jsongets track_name,"name",pti_json(0)
@@ -1428,15 +1450,15 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	jsonnext pti_json(1),pti_json(1),2
 
 	jsongets artist_name(0),"name",pti_json(1)
-	if stat=1:artist_name_all=""//Œ©‚Â‚©‚ç‚È‚©‚Á‚½ê‡
+	if stat=1:artist_name_all=""//è¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸå ´åˆ
 	artist_name_all+=artist_name(0)
 
-	//Spotify‚ÌƒA[ƒeƒBƒXƒg—“‚Í•¡”‚ ‚éê‡‚ª‚ ‚é(ft.“™)
-	//‚»‚ê‚É‘Î‰‚³‚¹‚é‚½‚ßƒA[ƒeƒBƒXƒg–¼‚ğæ“¾‚Å‚«‚é‚¾‚¯æ“¾‚·‚é•K—v‚ª‚ ‚é
+	//Spotifyã®ã‚¢ãƒ¼ãƒ†ã‚£ã‚¹ãƒˆæ¬„ã¯è¤‡æ•°ã‚ã‚‹å ´åˆãŒã‚ã‚‹(ft.ç­‰)
+	//ãã‚Œã«å¯¾å¿œã•ã›ã‚‹ãŸã‚ã‚¢ãƒ¼ãƒ†ã‚£ã‚¹ãƒˆåã‚’å–å¾—ã§ãã‚‹ã ã‘å–å¾—ã™ã‚‹å¿…è¦ãŒã‚ã‚‹
 	repeat
 	jsonnext pti_json(1),pti_json(1),0
 	jsongets artist_name(cnt+1),"name",pti_json(1)
-	if stat=1:break//Œ©‚Â‚©‚ç‚È‚©‚Á‚½ê‡
+	if stat=1:break//è¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸå ´åˆ
 	artist_name_all+=""+artist_pun+""+artist_name(cnt+1)
 	await 1
 	loop
@@ -1444,7 +1466,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	jsongetobj pti_json(1),"external_urls",pti_json(0)
 	jsonnext pti_json(1),pti_json(1),1
 
-	//ƒ[ƒJƒ‹ƒtƒ@ƒCƒ‹‚Ì‚½‚ßURL‚Íæ“¾‚Å‚«‚È‚¢
+	//ãƒ­ãƒ¼ã‚«ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«ã®ãŸã‚URLã¯å–å¾—ã§ããªã„
 	if is_local=0{
 	repeat 2
 	jsongets track_url,"spotify",pti_json(1)
@@ -1456,17 +1478,17 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	
 	jsonclose
 	
-	//ƒAƒ‹ƒoƒ€–¼æ“¾
+	//ã‚¢ãƒ«ãƒãƒ åå–å¾—
 	jsonopen pti_json(0),playing_track_info
 	jsongetobj pti_json,"item",pti_json(0)
 	jsonnext pti_json(0),pti_json(0),2
 	jsongets album_name,"name",pti_json(0)
-	if stat=1:album_name=""//Œ©‚Â‚©‚ç‚È‚©‚Á‚½ê‡
+	if stat=1:album_name=""//è¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸå ´åˆ
 	jsonclose
 
 	
 
-	//ƒ[ƒJƒ‹ƒtƒ@ƒCƒ‹‚Ì‚½‚ßƒA[ƒgƒ[ƒN‰æ‘œ‚Íæ“¾‚Å‚«‚È‚¢
+	//ãƒ­ãƒ¼ã‚«ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«ã®ãŸã‚ã‚¢ãƒ¼ãƒˆãƒ¯ãƒ¼ã‚¯ç”»åƒã¯å–å¾—ã§ããªã„
 	if is_local=0{
 	jsonopen pti_json_h(0),playing_track_info
 	jsongetobj pti_json_h(1),"item",pti_json_h(0)
@@ -1494,7 +1516,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	track_progress_ms = int(track_progress_ms_s)
 	track_progress_m = track_progress_ms / 60
 	track_progress_s = track_progress_ms \ 60
-	//dialog str(track_progress_m)+"•ª"+str(track_progress_s)+"•b"
+	//dialog str(track_progress_m)+"åˆ†"+str(track_progress_s)+"ç§’"
 
 	jsonopen pti_json(0),playing_device_info
 	jsongetobj pti_json(0),"devices",pti_json(0)
@@ -1518,7 +1540,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	
 	if player_pausing=1{
 		
-		tab_name="ˆê’â~’†"
+		tab_name="ä¸€æ™‚åœæ­¢ä¸­"
 		nkfcnv tab_name,tab_name,"Ws"
 
 		gsel 0
@@ -1526,7 +1548,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 		
 	}else{
 		
-		tab_name="Šy‹ÈÄ¶’† / "+playing_device_name+"‚ÅÄ¶’†" /// "+progress_ms_a+""
+		tab_name="æ¥½æ›²å†ç”Ÿä¸­ / "+playing_device_name+"ã§å†ç”Ÿä¸­" /// "+progress_ms_a+""
 		nkfcnv tab_name,tab_name,"Ws"
 
 		gsel 0
@@ -1534,8 +1556,8 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 
 	}
 
-	//UTF-8‚Æ‰¼’è‚µSJIS(ShiftJIS)‚É•ÏŠ·
-	//•Ô‚Á‚Ä‚­‚éJSON‚Í‚¾‚¢‚½‚¢UTF-8
+	//UTF-8ã¨ä»®å®šã—SJIS(ShiftJIS)ã«å¤‰æ›
+	//è¿”ã£ã¦ãã‚‹JSONã¯ã ã„ãŸã„UTF-8
 	nkfcnv track_name,track_name,"Ww"
 	nkfcnv artist_name,artist_name,"Ww"
 	nkfcnv album_name,album_name,"Ww"
@@ -1557,7 +1579,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 
 	if streamdeck_sw="1":goto,*tweet_spotify_info_streamdeck
 	
-	//ˆê“I‚É•ÛŠÇ‚µ‚Ä‚¨‚¢‚½‹È–¼‚ÆƒA[ƒeƒBƒXƒg–¼‚ª•sˆê’v‚Ì‚Æ‚«ƒcƒC[ƒg
+	//ä¸€æ™‚çš„ã«ä¿ç®¡ã—ã¦ãŠã„ãŸæ›²åã¨ã‚¢ãƒ¼ãƒ†ã‚£ã‚¹ãƒˆåãŒä¸ä¸€è‡´ã®ã¨ããƒ„ã‚¤ãƒ¼ãƒˆ
 	if track_name=track_name_c&artist_name=artist_name_c{
 	}else{
 		
@@ -1587,11 +1609,11 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 		gcopy 12,0,0,400,137
 
 		color 255,255,255
-		font "IPAexƒSƒVƒbƒN",13
+		font "IPAexã‚´ã‚·ãƒƒã‚¯",13
 		pos 123,5
-		mes "Šy‹È‚ÌÚ×ƒy[ƒW‚ğŠJ‚­"
+		mes "æ¥½æ›²ã®è©³ç´°ãƒšãƒ¼ã‚¸ã‚’é–‹ã"
 		pos 516,5
-		mes "Šy‹È‚ÌÚ×ƒy[ƒW‚ğŠJ‚­"
+		mes "æ¥½æ›²ã®è©³ç´°ãƒšãƒ¼ã‚¸ã‚’é–‹ã"
 
 		gsel 1
 		
@@ -1611,11 +1633,11 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 		gcopy 12,0,0,400,137
 
 		color 255,255,255
-		font "IPAexƒSƒVƒbƒN",13
+		font "IPAexã‚´ã‚·ãƒƒã‚¯",13
 		pos 149,5
-		mes "è“®‚Å‚Â‚Ô‚â‚­"
+		mes "æ‰‹å‹•ã§ã¤ã¶ã‚„ã"
 		pos 542,5
-		mes "è“®‚Å‚Â‚Ô‚â‚­"
+		mes "æ‰‹å‹•ã§ã¤ã¶ã‚„ã"
 
 		gsel 1
 		
@@ -1635,11 +1657,11 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 		gcopy 12,0,0,400,137
 
 		color 255,255,255
-		font "IPAexƒSƒVƒbƒN",13
+		font "IPAexã‚´ã‚·ãƒƒã‚¯",13
 		pos 149,4
-		mes "Discord‚É‘—M"
+		mes "Discordã«é€ä¿¡"
 		pos 542,4
-		mes "Discord‚É‘—M"
+		mes "Discordã«é€ä¿¡"
 
 		gsel 1
 		
@@ -1659,11 +1681,11 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 		gcopy 12,0,0,400,137
 
 		color 255,255,255
-		font "IPAexƒSƒVƒbƒN",13
+		font "IPAexã‚´ã‚·ãƒƒã‚¯",13
 		pos 166,5
-		mes "“®ì’â~"
+		mes "å‹•ä½œåœæ­¢"
 		pos 559,5
-		mes "“®ì’â~"
+		mes "å‹•ä½œåœæ­¢"
 
 		gsel 1
 		
@@ -1688,27 +1710,27 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 
 		if stat=1:tweet_button_sw=1
 
-		if do_restart=1:dialog"Šy‹È‚ªÄ¶‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ":stop
+		if do_restart=1:dialog"æ¥½æ›²ãŒå†ç”Ÿã•ã‚Œã¦ã„ã¾ã›ã‚“":stop
 
 *tweet_spotify_info_streamdeck
 		
-		//ƒ[ƒJƒ‹ƒtƒ@ƒCƒ‹‚Ìê‡URL‚ÍNULL‚É‚·‚é
+		//ãƒ­ãƒ¼ã‚«ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«ã®å ´åˆURLã¯NULLã«ã™ã‚‹
 		if is_local=1:track_url=""
 		
-		//ˆê“I‚É•ÛŠÇ
+		//ä¸€æ™‚çš„ã«ä¿ç®¡
 		track_name_c=track_name
 		artist_name_c=artist_name
 		track_url_c=track_url
 		album_name_c=album_name
 		
-		//ƒ[ƒJƒ‹ƒtƒ@ƒCƒ‹‚ÅURL‚ª‚È‚¢ê‡•Ï”‚ğ‹ó‚É‚·‚é
-		//(‘O‰ñ’®‚¢‚Ä‚¢‚½Šy‹È‚ÌURL‚Æˆê‚¾‚Á‚½ê‡)
+		//ãƒ­ãƒ¼ã‚«ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«ã§URLãŒãªã„å ´åˆå¤‰æ•°ã‚’ç©ºã«ã™ã‚‹
+		//(å‰å›è´ã„ã¦ã„ãŸæ¥½æ›²ã®URLã¨ä¸€ç·’ã ã£ãŸå ´åˆ)
 		
 		tCupInit "test",consumer_key,consumer_secret,10
 		setAccessToken t_access_token,t_access_secret
 
-		//tab_flag=0‚Ìê‡
-		//ƒAƒNƒeƒBƒuƒEƒBƒ“ƒhƒE‚ªMainƒEƒBƒ“ƒhƒE(ID0)‚Ì‚½‚ßƒcƒC[ƒg•¶‚Í‚»‚Ì‚Ü‚Ü‚Ì•¶‚ÅƒcƒC[ƒg
+		//tab_flag=0ã®å ´åˆ
+		//ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãŒMainã‚¦ã‚£ãƒ³ãƒ‰ã‚¦(ID0)ã®ãŸã‚ãƒ„ã‚¤ãƒ¼ãƒˆæ–‡ã¯ãã®ã¾ã¾ã®æ–‡ã§ãƒ„ã‚¤ãƒ¼ãƒˆ
 		if tab_flag=0{
 			
 			strrep tweet_data,"{TRACK_NAME}",track_name
@@ -1738,8 +1760,8 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 		develop_twitter="#####  HEADER  ######\n"+getResponseHeader()+"\n\n#####  BODY  #####\n"+getResponseBody()
 		if develop=1:gsel 6:objprm 0,develop_twitter:gsel 1
 		
-		//tab_flag=1‚Ìê‡
-		//ƒAƒNƒeƒBƒuƒEƒBƒ“ƒhƒE‚ªMainƒEƒBƒ“ƒhƒEˆÈŠO(ID0ˆÈŠO)‚Ì‚½‚ßƒcƒC[ƒg•¶‚Íİ’è‚Å•ÏX‘O‚ÌƒcƒC[ƒg•¶
+		//tab_flag=1ã®å ´åˆ
+		//ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãŒMainã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ä»¥å¤–(ID0ä»¥å¤–)ã®ãŸã‚ãƒ„ã‚¤ãƒ¼ãƒˆæ–‡ã¯è¨­å®šã§å¤‰æ›´å‰ã®ãƒ„ã‚¤ãƒ¼ãƒˆæ–‡
 		}else{
 			
 			strrep tweet_data_c,"{TRACK_NAME}",track_name
@@ -1811,7 +1833,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 		}
 
 		if tweet_button_sw=0{
-			//Še•Ï”‚Ì‰Šú‰»
+			//å„å¤‰æ•°ã®åˆæœŸåŒ–
 			main_loop_cnt=0
 			max_sizet=0
 			info_loop_cnt=0
@@ -1853,24 +1875,24 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	
 	return
 	
-//ƒ^ƒuØ‚è‘Ö‚¦ˆ—
+//ã‚¿ãƒ–åˆ‡ã‚Šæ›¿ãˆå‡¦ç†
 *change_tab
 	
 	dupptr nmhdr, lparam, 12
 	if nmhdr.0 = hTabControl & nmhdr.2 = -551 {
 		ChangeTab
 
-		//ƒAƒNƒeƒBƒu‚ÈƒEƒBƒ“ƒhƒEID‚ğtab_flag‚ÉŠi”[(intŒ^)
+		//ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãªã‚¦ã‚£ãƒ³ãƒ‰ã‚¦IDã‚’tab_flagã«æ ¼ç´(intå‹)
 		tab_flag=stat
 
-		//Main‚ÌƒEƒBƒ“ƒhƒEˆÈŠO‚©‚çMainƒEƒBƒ“ƒhƒE‚É‹A‚Á‚Ä‚«‚½ê‡
-		//İ’è‚µ‚½tweet_data‚ğŠe•Ï”‚ÉŠ„‚è“–‚Ä•Û‘¶‚·‚é
+		//Mainã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ä»¥å¤–ã‹ã‚‰Mainã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«å¸°ã£ã¦ããŸå ´åˆ
+		//è¨­å®šã—ãŸtweet_dataã‚’å„å¤‰æ•°ã«å‰²ã‚Šå½“ã¦ä¿å­˜ã™ã‚‹
 		if tab_flag=0{
 			
 			tweet_data_c=tweet_data
 			tweet_data_s=tweet_data
 
-			//•Û‘¶(set1_ini)
+			//ä¿å­˜(set1_ini)
 			exist"data/ini/tweet_data"
 			if strsize>0:delete"data/ini/tweet_data"
 			bsave "data/ini/tweet_data",tweet_data,strlen(tweet_data)
@@ -1883,7 +1905,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 			if strsize>0:delete"data/ini/set1"
 			bsave "data/ini/set1",set1_ini,strlen(set1_ini)
 
-			//•Û‘¶(set2_ini)
+			//ä¿å­˜(set2_ini)
 
 			notesel theme_list
 			noteget theme_name,theme_list_num
@@ -1952,12 +1974,12 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 
 	color 255,255,255
 
-	font "IPAexƒSƒVƒbƒN",23
+	font "IPAexã‚´ã‚·ãƒƒã‚¯",23
 	pos 137,95
-	mes "“®ì’â~’†"
-	font "IPAexƒSƒVƒbƒN",13
+	mes "å‹•ä½œåœæ­¢ä¸­"
+	font "IPAexã‚´ã‚·ãƒƒã‚¯",13
 	pos 107,125
-	mes "Šy‹È‚ğÄ¶‚·‚é‚ÆÄŠJ‚³‚ê‚Ü‚·"
+	mes "æ¥½æ›²ã‚’å†ç”Ÿã™ã‚‹ã¨å†é–‹ã•ã‚Œã¾ã™"
 
 	clrobj 0,3
 
@@ -1975,11 +1997,11 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	gcopy 12,0,0,400,137
 
 	/*color 255,255,255
-	font "IPAexƒSƒVƒbƒN",13
+	font "IPAexã‚´ã‚·ãƒƒã‚¯",13
 	pos 166,5
-	mes "“®ìÄŠJ"
+	mes "å‹•ä½œå†é–‹"
 	pos 559,5
-	mes "“®ìÄŠJ"
+	mes "å‹•ä½œå†é–‹"
 
 	gsel 1
 		
@@ -1989,7 +2011,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	pos 0,201
 	button goto"",*start*/
 
-	tab_name="Šy‹È‚ÍÄ¶‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ"
+	tab_name="æ¥½æ›²ã¯å†ç”Ÿã•ã‚Œã¦ã„ã¾ã›ã‚“"
 	nkfcnv tab_name,tab_name,"Ws"
 
 	gsel 0
@@ -2030,14 +2052,14 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 		netgetv token_authorization
 		netterm
 	
-		//ƒAƒNƒZƒXƒg[ƒNƒ“‚ÆƒŠƒtƒŒƒbƒVƒ…ƒg[ƒNƒ“‚ğæ‚èo‚·
+		//ã‚¢ã‚¯ã‚»ã‚¹ãƒˆãƒ¼ã‚¯ãƒ³ã¨ãƒªãƒ•ãƒ¬ãƒƒã‚·ãƒ¥ãƒˆãƒ¼ã‚¯ãƒ³ã‚’å–ã‚Šå‡ºã™
 		jsonopen pti_json,token_authorization
 		jsongets access_token,"access_token",pti_json
 		jsongets refresh_token,"refresh_token",pti_json
 
 		s_token_set=""+access_token+"\n"+refresh_token+""
 
-		//ƒg[ƒNƒ“‚Ì•Û‘¶
+		//ãƒˆãƒ¼ã‚¯ãƒ³ã®ä¿å­˜
 		exist"data/api/s_access_token"
 		if strsize>0:delete"data/api/s_access_token"
 		bsave "data/api/s_access_token",s_token_set,strlen(s_token_set)
@@ -2054,7 +2076,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 
 
 *wp_pass_d
-	dialog "jpg;*.png;*.bmp",16,"•Ç†‘I‘ğ"
+	dialog "jpg;*.png;*.bmp",16,"å£ç´™é¸æŠ"
 
 	if stat=7:goto,*main	
 
@@ -2072,7 +2094,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	if tweet_data_s="":stop:else:goto,*start
 	
 *exit_app
-	if wparam=5:gsel 50,-1:stop//Twitter‚Ì”FØPIN“ü—Í‰æ–Ê
+	if wparam=5:gsel 50,-1:stop//Twitterã®èªè¨¼PINå…¥åŠ›ç”»é¢
 	
 	exist"data/pic/artwork.jpg"
 	if strsize>0:delete"data/pic/artwork.jpg"
@@ -2089,7 +2111,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	if strsize>0:delete"data/ini/set1"
 	bsave "data/ini/set1",set1_ini,strlen(set1_ini)
 
-	//•Û‘¶(set2_ini)
+	//ä¿å­˜(set2_ini)
 
 	notesel theme_list
 	noteget theme_name,theme_list_num
@@ -2119,7 +2141,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 
 *twitter_authorize_p
 
-	//TsubuyakiSoup.mod‚ğg—p
+	//TsubuyakiSoup.modã‚’ä½¿ç”¨
 
 	tCupInit"testClient",consumer_key,consumer_secret,10
 	t_address = getAuthorizeAddress()
@@ -2128,12 +2150,12 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	
 	gsel 50,2
 	cls 
-	title"PIN‚Ì“ü—Í"
+	title"PINã®å…¥åŠ›"
 	
 	gsel 50
 	
 	pos 15,10
-	mes "PIN‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢"
+	mes "PINã‚’å…¥åŠ›ã—ã¦ãã ã•ã„"
 	pos 50,35
 	input tapin,100,20
 	pos 67,60
@@ -2142,7 +2164,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 
 *t_get_access_token_p
 
-	if tapin="":dialog "PIN‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢":stop
+	if tapin="":dialog "PINã‚’å…¥åŠ›ã—ã¦ãã ã•ã„":stop
 	
 	publishAccessToken t_access_token,t_access_secret,t_userdata,tapin
 	
@@ -2175,11 +2197,11 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	if strsize>0:delete"data/ini/accountset"
 	bsave "data/ini/accountset",t_userdata,strlen(t_userdata)
 
-	dialog "’Ç‰Á”FØ‚ªŠ®—¹‚µ‚Ü‚µ‚½\nŠJ‚©‚ê‚½ƒ^ƒu‚Í•Â‚¶‚Ä‚­‚¾‚³‚¢"
+	dialog "è¿½åŠ èªè¨¼ãŒå®Œäº†ã—ã¾ã—ãŸ\né–‹ã‹ã‚ŒãŸã‚¿ãƒ–ã¯é–‰ã˜ã¦ãã ã•ã„"
 
 	gsel 50,-1
 
-	//setupÏ‚İflag‚ğ•Û‘¶
+	//setupæ¸ˆã¿flagã‚’ä¿å­˜
 	twitter_setup_flag=1
 	twitter_setup_flag=str(twitter_setup_flag)
 	exist"data/ini/twitter_setup"
@@ -2191,7 +2213,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 
 	if do_restart=1{
 	gsel 1
-	if twitter_setup_flag=1:objprm 1,"Twitter‚Í”FØÏ‚İ‚Å‚·":objenable 1,0
+	if twitter_setup_flag=1:objprm 1,"Twitterã¯èªè¨¼æ¸ˆã¿ã§ã™":objenable 1,0
 	}
 	gsel 4:objenable 2,1:objenable 3,1
 
@@ -2213,31 +2235,31 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
 
 	pos 3,3
-	font "IPAexƒSƒVƒbƒN",15
-	mes "ƒAƒJƒEƒ“ƒgˆê——(@id)"
+	font "IPAexã‚´ã‚·ãƒƒã‚¯",15
+	mes "ã‚¢ã‚«ã‚¦ãƒ³ãƒˆä¸€è¦§(@id)"
 	objsize 385,20
 	combox twitter_user_num,150,twitter_user_list
 
-	font "IPAexƒSƒVƒbƒN",13
+	font "IPAexã‚´ã‚·ãƒƒã‚¯",13
 	pos 5,160
 	
 	if t_userdata=""{
-		mes "ƒAƒJƒEƒ“ƒg‚ª“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ"
+		mes "ã‚¢ã‚«ã‚¦ãƒ³ãƒˆãŒç™»éŒ²ã•ã‚Œã¦ã„ã¾ã›ã‚“"
 	}else{
-		mes "Œ»İg—p’†‚ÌƒAƒJƒEƒ“ƒg : @"+t_userdata
+		mes "ç¾åœ¨ä½¿ç”¨ä¸­ã®ã‚¢ã‚«ã‚¦ãƒ³ãƒˆ : @"+t_userdata
 	}
 
 	objsize 100,20
 	pos 5,200
-	button goto"ƒAƒJƒEƒ“ƒg’Ç‰Á",*twitter_authorize_p
+	button goto"ã‚¢ã‚«ã‚¦ãƒ³ãƒˆè¿½åŠ ",*twitter_authorize_p
 
 	objsize 100,20
 	pos 110,200
-	button goto"ƒAƒJƒEƒ“ƒgíœ",*delete_twitter
+	button goto"ã‚¢ã‚«ã‚¦ãƒ³ãƒˆå‰Šé™¤",*delete_twitter
 
 	objsize 100,20
 	pos 287,200
-	button goto"‚±‚ÌƒAƒJƒEƒ“ƒg‚ğg‚¤",*twitter_decision
+	button goto"ã“ã®ã‚¢ã‚«ã‚¦ãƒ³ãƒˆã‚’ä½¿ã†",*twitter_decision
 
 	if twitter_user_list="":gsel 4:objenable 2,0:objenable 3,0
 	
@@ -2245,7 +2267,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 
 *delete_twitter
 
-	dialog "‚±‚ÌƒAƒJƒEƒ“ƒg‚ğÁ‹‚µ‚Ü‚·‚©H",3
+	dialog "ã“ã®ã‚¢ã‚«ã‚¦ãƒ³ãƒˆã‚’æ¶ˆå»ã—ã¾ã™ã‹ï¼Ÿ",3
 	if stat=7:stop
 
 	notesel twitter_user_list
@@ -2269,7 +2291,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	if strsize>0:delete"data/ini/accountset"
 	bsave "data/ini/accountset",t_userdata,strlen(t_userdata)
 
-	dialog "Á‹‚µ‚Ü‚µ‚½"
+	dialog "æ¶ˆå»ã—ã¾ã—ãŸ"
 
 	dirlist twitter_user_list,"data/api/twitter/*.spa",0
 	strrep twitter_user_list,".spa",""
@@ -2282,7 +2304,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 
 	if twitter_user_list=""{
 		twitter_setup_flag=0
-		//–¢setupflag‚ğ•Û‘¶
+		//æœªsetupflagã‚’ä¿å­˜
 		twitter_setup_flag=str(twitter_setup_flag)
 		exist"data/ini/twitter_setup"
 		if strsize>0:delete"data/ini/twitter_setup"
@@ -2304,31 +2326,31 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 		color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
 
 		pos 3,3
-		font "IPAexƒSƒVƒbƒN",15
-		mes "ƒAƒJƒEƒ“ƒgˆê——(@id)"
+		font "IPAexã‚´ã‚·ãƒƒã‚¯",15
+		mes "ã‚¢ã‚«ã‚¦ãƒ³ãƒˆä¸€è¦§(@id)"
 		objsize 385,20
 		combox twitter_user_num,150,twitter_user_list
 
-		font "IPAexƒSƒVƒbƒN",13
+		font "IPAexã‚´ã‚·ãƒƒã‚¯",13
 		pos 5,160
 	
 		if t_userdata=""{
-			mes "ƒAƒJƒEƒ“ƒg‚ª“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ"
+			mes "ã‚¢ã‚«ã‚¦ãƒ³ãƒˆãŒç™»éŒ²ã•ã‚Œã¦ã„ã¾ã›ã‚“"
 		}else{
-			mes "Œ»İg—p’†‚ÌƒAƒJƒEƒ“ƒg : @"+t_userdata
+			mes "ç¾åœ¨ä½¿ç”¨ä¸­ã®ã‚¢ã‚«ã‚¦ãƒ³ãƒˆ : @"+t_userdata
 		}
 
 		objsize 100,20
 		pos 5,200
-		button goto"ƒAƒJƒEƒ“ƒg’Ç‰Á",*twitter_authorize_p
+		button goto"ã‚¢ã‚«ã‚¦ãƒ³ãƒˆè¿½åŠ ",*twitter_authorize_p
 
 		objsize 100,20
 		pos 110,200
-		button goto"ƒAƒJƒEƒ“ƒgíœ",*delete_twitter
+		button goto"ã‚¢ã‚«ã‚¦ãƒ³ãƒˆå‰Šé™¤",*delete_twitter
 
 		objsize 100,20
 		pos 287,200
-		button goto"‚±‚ÌƒAƒJƒEƒ“ƒg‚ğg‚¤",*twitter_decision
+		button goto"ã“ã®ã‚¢ã‚«ã‚¦ãƒ³ãƒˆã‚’ä½¿ã†",*twitter_decision
 
 		if twitter_user_list="":gsel 4:objenable 2,0:objenable 3,0
 		goto,*twitter_setup
@@ -2352,31 +2374,31 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
 
 	pos 3,3
-	font "IPAexƒSƒVƒbƒN",15
-	mes "ƒAƒJƒEƒ“ƒgˆê——(@id)"
+	font "IPAexã‚´ã‚·ãƒƒã‚¯",15
+	mes "ã‚¢ã‚«ã‚¦ãƒ³ãƒˆä¸€è¦§(@id)"
 	objsize 385,20
 	combox twitter_user_num,150,twitter_user_list
 
-	font "IPAexƒSƒVƒbƒN",13
+	font "IPAexã‚´ã‚·ãƒƒã‚¯",13
 	pos 5,160
 	
 	if t_userdata=""{
-		mes "ƒAƒJƒEƒ“ƒg‚ª“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ"
+		mes "ã‚¢ã‚«ã‚¦ãƒ³ãƒˆãŒç™»éŒ²ã•ã‚Œã¦ã„ã¾ã›ã‚“"
 	}else{
-		mes "Œ»İg—p’†‚ÌƒAƒJƒEƒ“ƒg : @"+t_userdata
+		mes "ç¾åœ¨ä½¿ç”¨ä¸­ã®ã‚¢ã‚«ã‚¦ãƒ³ãƒˆ : @"+t_userdata
 	}
 
 	objsize 100,20
 	pos 5,200
-	button goto"ƒAƒJƒEƒ“ƒg’Ç‰Á",*twitter_authorize_p
+	button goto"ã‚¢ã‚«ã‚¦ãƒ³ãƒˆè¿½åŠ ",*twitter_authorize_p
 
 	objsize 100,20
 	pos 110,200
-	button goto"ƒAƒJƒEƒ“ƒgíœ",*delete_twitter
+	button goto"ã‚¢ã‚«ã‚¦ãƒ³ãƒˆå‰Šé™¤",*delete_twitter
 
 	objsize 100,20
 	pos 287,200
-	button goto"‚±‚ÌƒAƒJƒEƒ“ƒg‚ğg‚¤",*twitter_decision
+	button goto"ã“ã®ã‚¢ã‚«ã‚¦ãƒ³ãƒˆã‚’ä½¿ã†",*twitter_decision
 
 	if twitter_user_list="":gsel 4:objenable 2,0:objenable 3,0
 	
@@ -2387,11 +2409,11 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	gsel 1
 	cls
 
-	//”wŒiF
+	//èƒŒæ™¯è‰²
 	color int(spt_bc(0)),int(spt_bc(1)),int(spt_bc(2)):boxf
 
-	//”wŒi‰æ‘œ
-	//‰æ‘œ‚ª‚ ‚éê‡‚Ì‚İ•\¦
+	//èƒŒæ™¯ç”»åƒ
+	//ç”»åƒãŒã‚ã‚‹å ´åˆã®ã¿è¡¨ç¤º
 	if spt_bi_data!""{
 	pos 0,0
 	gcopy 13,0,0,400,230
@@ -2399,40 +2421,40 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	pos 0,0
 	gcopy 12,0,0,400,230
 	}
-	//•¶šF
+	//æ–‡å­—è‰²
 	color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
 
 
-	font "IPAexƒSƒVƒbƒN",16
+	font "IPAexã‚´ã‚·ãƒƒã‚¯",16
 
 
 	objsize 300,30
 	pos 85,25
-	mes "‰Šúİ’è‚ğŠ®—¹‚³‚¹‚Ä‚­‚¾‚³‚¢"
+	mes "åˆæœŸè¨­å®šã‚’å®Œäº†ã•ã›ã¦ãã ã•ã„"
 
 
 	pos 50,70
-	button goto"Spotify‚Ì”FØ",*spotify_authorize
+	button goto"Spotifyã®èªè¨¼",*spotify_authorize
 	pos 50,115
-	button goto"Twitter‚Ì”FØ",*twitter_authorize
+	button goto"Twitterã®èªè¨¼",*twitter_authorize
 	pos 50,160
-	button goto"—˜—pŠJn",*start
+	button goto"åˆ©ç”¨é–‹å§‹",*start
 
 
-	//”’l•ÏŠ·
+	//æ•°å€¤å¤‰æ›
 	spotify_setup_flag=int(spotify_setup_flag)
 	twitter_setup_flag=int(twitter_setup_flag)
 
 
-	if spotify_setup_flag=1:objprm 0,"Spotify‚Í”FØÏ‚İ‚Å‚·":objenable 0,0
+	if spotify_setup_flag=1:objprm 0,"Spotifyã¯èªè¨¼æ¸ˆã¿ã§ã™":objenable 0,0
 
 	stop
 
 *twitter_decision
 
-	if twitter_user_list="":dialog"ƒAƒJƒEƒ“ƒg‚ğ“o˜^‚µ‚Ä‚­‚¾‚³‚¢":stop
+	if twitter_user_list="":dialog"ã‚¢ã‚«ã‚¦ãƒ³ãƒˆã‚’ç™»éŒ²ã—ã¦ãã ã•ã„":stop
 
-	dialog "‚±‚ÌƒAƒJƒEƒ“ƒg‚ğg—p‚µ‚Ü‚·‚©H",2
+	dialog "ã“ã®ã‚¢ã‚«ã‚¦ãƒ³ãƒˆã‚’ä½¿ç”¨ã—ã¾ã™ã‹ï¼Ÿ",2
 	if stat=7:stop
 
 	notesel twitter_user_list
@@ -2447,7 +2469,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	if strsize>0:delete"data/ini/accountset"
 	bsave "data/ini/accountset",account_default,strlen(account_default)
 
-	dialog"ƒAƒJƒEƒ“ƒg‚ğİ’è‚µ‚Ü‚µ‚½"
+	dialog"ã‚¢ã‚«ã‚¦ãƒ³ãƒˆã‚’è¨­å®šã—ã¾ã—ãŸ"
 
 	gsel 4
 
@@ -2467,31 +2489,31 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
 
 	pos 3,3
-	font "IPAexƒSƒVƒbƒN",15
-	mes "ƒAƒJƒEƒ“ƒgˆê——(@id)"
+	font "IPAexã‚´ã‚·ãƒƒã‚¯",15
+	mes "ã‚¢ã‚«ã‚¦ãƒ³ãƒˆä¸€è¦§(@id)"
 	objsize 385,20
 	combox twitter_user_num,150,twitter_user_list
 
-	font "IPAexƒSƒVƒbƒN",13
+	font "IPAexã‚´ã‚·ãƒƒã‚¯",13
 	pos 5,160
 	
 	if account_default=""{
-		mes "ƒAƒJƒEƒ“ƒg‚ª“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ"
+		mes "ã‚¢ã‚«ã‚¦ãƒ³ãƒˆãŒç™»éŒ²ã•ã‚Œã¦ã„ã¾ã›ã‚“"
 	}else{
-		mes "Œ»İg—p’†‚ÌƒAƒJƒEƒ“ƒg : @"+account_default
+		mes "ç¾åœ¨ä½¿ç”¨ä¸­ã®ã‚¢ã‚«ã‚¦ãƒ³ãƒˆ : @"+account_default
 	}
 
 	objsize 100,20
 	pos 5,200
-	button goto"ƒAƒJƒEƒ“ƒg’Ç‰Á",*twitter_authorize_p
+	button goto"ã‚¢ã‚«ã‚¦ãƒ³ãƒˆè¿½åŠ ",*twitter_authorize_p
 
 	objsize 100,20
 	pos 110,200
-	button goto"ƒAƒJƒEƒ“ƒgíœ",*delete_twitter
+	button goto"ã‚¢ã‚«ã‚¦ãƒ³ãƒˆå‰Šé™¤",*delete_twitter
 
 	objsize 100,20
 	pos 287,200
-	button goto"‚±‚ÌƒAƒJƒEƒ“ƒg‚ğg‚¤",*twitter_decision
+	button goto"ã“ã®ã‚¢ã‚«ã‚¦ãƒ³ãƒˆã‚’ä½¿ã†",*twitter_decision
 
 	if twitter_user_list="":gsel 4:objenable 2,0:objenable 3,0
 
@@ -2499,7 +2521,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 
 *set_initialization
 
-	dialog "‘Sİ’è(İ’è1,İ’è2)‚ğ‰Šú‰»‚µ‚Ü‚·‚ª‚æ‚ë‚µ‚¢‚Å‚µ‚å‚¤‚©H",3,"Snowpy"
+	dialog "å…¨è¨­å®š(è¨­å®š1,è¨­å®š2)ã‚’åˆæœŸåŒ–ã—ã¾ã™ãŒã‚ˆã‚ã—ã„ã§ã—ã‚‡ã†ã‹ï¼Ÿ",3,"Snowpy"
 
 	if stat = 7{
 		if loop_now=0:stop:else:goto,*start
@@ -2516,7 +2538,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	theme_name="light"
 	error_report_sw=0
 
-	//•Û‘¶(set1_ini)
+	//ä¿å­˜(set1_ini)
 	exist"data/ini/tweet_data"
 	if strsize>0:delete"data/ini/tweet_data"
 	bsave "data/ini/tweet_data",tweet_data,strlen(tweet_data)
@@ -2528,7 +2550,7 @@ exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_ty
 	if strsize>0:delete"data/ini/set1"
 	bsave "data/ini/set1",set1_ini,strlen(set1_ini)
 
-	//•Û‘¶(set2_ini)
+	//ä¿å­˜(set2_ini)
 
 	notesel theme_list
 	noteget theme_name,theme_list_num
