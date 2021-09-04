@@ -1,0 +1,2 @@
+Client ID (API key)
+Client Secret (API Secret)
