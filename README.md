@@ -4,6 +4,8 @@ Spotify Now Playing
 Spotifyで再生中の楽曲をTwitterに自動で投稿できます
 
 ## ビルド
+開発環境は HSP 3.5
+
 **s_key.txt**と**t_key.txt**に
 
 ```
