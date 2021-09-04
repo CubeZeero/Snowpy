@@ -1,0 +1,17 @@
+[tab_name_main]=Main
+[tab_name_set1]=Set1
+[tab_name_set2]=Set2
+[tab_name_account]=AccountSet
+[tab_name_info]=Info
+[main_info_initialization]=Please complete initial setting
+[set1_info_track]=SongTitle
+[set1_info_artist]=Artist
+[set1_info_album]=Album
+[set1_info_url]=SpotifyURL
+[set1_info_artworksw]=WithArtwork
+[set1_info_overlapsw]=重複投稿をする\n(時刻を挿入します)
+[set1_info_underinfo]=設定はMainウィンドウへ移動しない限り反映されません
+[set2_info_wallpaper]=壁紙画像(再起動時に適用されます)
+[set2_info_wallpaperbt]=参照
+[set2_info_autotweetsw]=自動ツイートを無効
+[set2_info_theme]=テーマ(要再起動)

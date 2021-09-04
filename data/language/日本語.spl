@@ -1,0 +1,17 @@
+[tab_name_main]=メイン
+[tab_name_set1]=設定1
+[tab_name_set2]=設定2
+[tab_name_account]=アカウント設定
+[tab_name_info]=情報
+[main_info_initialization]=初期設定を完了させてください
+[set1_info_track]=楽曲名
+[set1_info_artist]=アーティスト名
+[set1_info_album]=アルバム名
+[set1_info_url]=楽曲のURL
+[set1_info_artworksw]=アートワークも投稿する
+[set1_info_overlapsw]=重複投稿をする\n(時刻を挿入します)
+[set1_info_underinfo]=設定はMainウィンドウへ移動しない限り反映されません
+[set2_info_wallpaper]=壁紙画像(再起動時に適用されます)
+[set2_info_wallpaperbt]=参照
+[set2_info_autotweetsw]=自動ツイートを無効
+[set2_info_theme]=テーマ(要再起動)
