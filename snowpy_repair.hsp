@@ -1,0 +1,94 @@
+
+title "SnowpyRepair ver.b1"
+#packopt icon "repair_icon.ico"
+screen 0,300,160
+
+#module
+
+#deffunc deleteEx str p1,str p2
+	sdim dircur,260
+	dircur = dir_cur
+	chdir p1
+	dirlist fn,p2
+	split fn, "\n",buf
+	fc = (stat-1)
+	repeat fc
+		delete (buf.cnt)
+	loop
+	chdir dircur
+return fc
+
+#global
+
+null_str=""
+null_int="0"
+
+objsize 300,40
+
+pos 0,0
+button goto"Twitterの認証設定を初期化",*twitter_initialize
+pos 0,40
+button goto"Spotifyの認証設定を初期化",*spotify_initialize
+pos 0,80
+button goto"すべての認証設定を初期化",*all_initialize
+pos 0,120
+button goto"終了",*exit
+
+stop
+
+*twitter_initialize
+
+	deleteEx "data/api/twitter","*.spa"
+
+	exist"data/ini/twitter_setup"
+	if strsize>0:delete"data/ini/twitter_setup"
+	bsave "data/ini/twitter_setup",null_int
+
+	exist"data/ini/accountset"
+	if strsize>0:delete"data/ini/accountset"
+	bsave "data/ini/accountset",null_str
+
+	dialog "初期化が完了しました"
+
+	stop
+	
+*spotify_initialize
+
+	exist"data/api/s_access_token"
+	if strsize>0:delete"data/api/s_access_token"
+	bsave "data/api/s_access_token",null_str,strlen(null_str)
+
+	exist"data/ini/spotify_setup"
+	if strsize>0:delete"data/ini/spotify_setup"
+	bsave "data/ini/spotify_setup",null_int
+
+	dialog "初期化が完了しました"
+
+	stop
+	
+*all_initialize
+
+	deleteEx "data/api/twitter","*.spa"
+
+	exist"data/ini/twitter_setup"
+	if strsize>0:delete"data/ini/twitter_setup"
+	bsave "data/ini/twitter_setup",null_int
+
+	exist"data/ini/accountset"
+	if strsize>0:delete"data/ini/accountset"
+	bsave "data/ini/accountset",null_str
+
+	exist"data/api/s_access_token"
+	if strsize>0:delete"data/api/s_access_token"
+	bsave "data/api/s_access_token",null_str,strlen(null_str)
+
+	exist"data/ini/spotify_setup"
+	if strsize>0:delete"data/ini/spotify_setup"
+	bsave "data/ini/spotify_setup",null_int
+
+	dialog "初期化が完了しました"
+
+	stop
+	
+*exit
+	end

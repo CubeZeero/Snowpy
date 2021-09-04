@@ -1,0 +1,2559 @@
+/*////////////////////////////////////////////////
+
+Snowpy SourceCode
+Developed by Cube
+
+できる限りアウトコメントを書いています
+ソース読みにくかったらごめん
+
+////////////////////////////////////////////////*/
+
+*setup_start
+
+title "Snowpy"
+
+screen 0,400,271
+stbar_ini
+
+//APIキーを暗号化してパック
+#epack "t_key.txt"
+#epack "s_key.txt"
+
+//付属の.icoファイルをアイコンに設定
+#packopt icon "data/pic/swonpy_logo.ico"
+#packopt name "Swonpy"
+
+onexit goto,*exit_app
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+//データ読み込み欄
+
+
+//フォント読み込みdll
+#uselib "gdi32"
+#func AddFontResourceA "AddFontResourceA" var
+#func RemoveFontResourceA "RemoveFontResourceA" var
+
+#uselib "kernel32"
+#func GetModuleFileName "GetModuleFileNameA"  int,  var,  int
+
+//モジュールプラグイン
+#include "data/module/hspinet.as"
+#include "data/module/TsubuyakiSoup_mod.as"
+#include "data/module/hspsock.as"
+#include "data/module/newlinecode.as"
+#include "data/module/tab_module.as"//使い方はファイル参照
+#include "data/module/hsp3utf.as"
+#include "data/module/mod_stbar.as"
+#include "data/module/hspext.as"
+
+//変数一覧 (内部システム内で使用する変数は記載していません)
+spotify_setup_flag=0										//Spotifyが認証済みかどうか 0=未認証 1=認証済み
+twitter_setup_flag=0										//Twitterが認証済みかどうか 0=未認証 1=認証済み
+s_key=""													//SpotifyのAPIキー
+client_id=""												//クライアントID
+client_secret=""											//クライアントシークレット
+t_key=""													//TwitterのAPIキー
+consumer_key=""												//Twitterのコンシューマーキー
+consumer_secret=""											//Twitterのコンシューマーシークレット
+t_apiinfo=""												//TwitterのAPI情報
+t_userdata=""												//Twitterのユーザー情報
+t_access_token=""											//TwitterAPIのアクセストークン
+t_access_secret=""											//TwitterAPIのアクセスシークレット
+tapin=""													//TwitterAPI認証時に必要なPIN
+client_id_base64=""											//BASE64エンコードされたクライアントID
+client_secret_base64=""										//BASE64エンコードされたクライアントシークレット
+redirect_url="http://localhost:12001"						//リダイレクトURL
+sdim code_authorize,271										//ブラウザ認証時に渡されるコード
+post_authorize=""											//第2認証時にPOSTリクエストするデータ
+waitres=0													//netexec確認用
+sdim access_token,159										//アクセストークン
+refresh_token=""											//新アクセストークン交換用
+s_token_set=""												//SpotifyAPIトークンセット(改行済み)
+player_api_url="https://api.spotify.com/v1/me/player/"		//PLAYER関係のAPI専用のURL
+playing_track_info=""										//現在聴いている曲の全情報(JSON)						
+track_name=""												//現在聴いている曲名
+track_name_c=""												//現在聴いている曲名の一時保管用
+dim artist_name,30											//現在聴いている曲のアーティスト名
+artist_name_all=""											//現在聴いている曲のすべてのアーティスト名
+artist_name_c=""											//現在聴いている曲のアーティスト名の一時保管用
+track_url=""												//曲のSpotifyURL
+track_url_c=""												//曲のSpotifyURLの一時保管用
+album_name=""												//アルバム名
+album_name_c=""												//アルバム名の一時保管用
+artwork_index=0												//アートワークURLがある行番号
+artwork_url=""												//アートワークがあるURL(640x640)
+artwork_pass(0)="data/pic/artwork.jpg"						//アートワークの場所
+artwork_switch=0											//アートワーク投稿スイッチ(0=投稿しない 1=投稿)
+overtweet_switch=0											//重複投稿するかどうか。時刻が挿入される(0=しない 1=する)
+sdim tweet_data,1024										//ツイート内容
+sdim tweet_data_c,1024										//ツイート内容の一時保管用
+sdim tweet_data_s,1024										//ツイート内容の初期
+tab_flag=0													//タブ切り替え時にアクティブなタブのIDが格納される(0から始まる)
+set1_ini=""													//Set1タブで設定された項目セット
+set2_ini=""													//Set2タブで設定された項目セット
+sdim tweet_response,5000									//ツイート後にTwitterAPIからのレスポンス
+wp_pass=""													//壁紙がある場所
+wp_pass_up=""												//壁紙の場所の更新
+wp_switch=0													//壁紙を使うかどうか(0=使わない 1=使う)
+font_pass="data/font/ipaexg.ttf"							//フォントファイルの場所
+do_restart=0												//動作が再開されたかどうか(1=された 0=されてない)
+is_local=0													//ローカルファイルかどうか(1=ローカルファイル 0=ローカルファイルではない)
+auto_tweet_sw=0												//自動ツイートスイッチ(1=無効 0=有効)
+theme_list=""												//テーマファイル一覧
+theme_list_num=0											//適用されているテーマ番号
+spt_bc_data=""												//テーマファイルのバックグラウンド背景色全データ
+spt_tc_data=""												//テーマファイルのテキスト色全データ
+spt_bi_data=""												//テーマバックグラウンド画像
+spt_bi_tp=0													//テーマバックグラウンド画像の透明度
+dim spt_bc,3												//テーマファイルのバックグラウンド背景色 (RGB)
+dim spt_tc,3												//テーマファイルのテキスト色 (RGB)
+spt_data=""													//テーマファイルのデータ
+theme_name=""												//適用されているor選択されたテーマ名
+tweet_button_sw=0											//手動ツイートボタンが押されたかどうか (1=された 0=されてない)
+twitter_user_num=0											//ツイッターユーザー登録数
+twitter_user_list=""										//ツイッターユーザーリスト
+account_ini=""												//アカウント設定データ
+account_default=""											//デフォルトアカウント名
+error_report_sw=1											//エラーレポート送信するかしないか
+tab_name=""													//タブの文字(このソフトはhspランタイムでutf8化させて動かしているのでsjisからutf8に変換する必要がある)
+font_set=""													//フォントがインストールされているかどうか
+is_playing=""												//再生中かどうか(一時停止中かどうか)
+language_list=""											//言語リスト
+language_list_num=0											//言語リスト内の指定番号
+language_name=""											//設定された言語名
+artist_pun=""												//複数アーティストがいた場合用の区切り文字
+develop=0
+develop_code="dc09453327"									//DEVELOPCODE
+stopupdating=1
+develop_twitter=""
+develop_spotify=""
+playing_device_info=""										//再生しているデバイスの全情報
+playing_device_name=""										//再生しているデバイス名
+wp_artwork=0												//アートワークを壁紙するかどうか
+progress_ms=0												//再生中の楽曲の進行状況(秒)
+currently_playing_type=""									//再生中の楽曲のタイプ
+track_lagth=0												//楽曲全体の長さ
+discord_cmd=""												//Discord送信用コマンド
+window_active=0												//最前面表示させるかどうか
+wp_artwork_flag=0											//現在壁紙がアートワークかどうか
+note_infodata=""
+streamdeck_sw=""
+dim pti_json,20												//Jsonポインタ
+playing_device_active=0										//デバイスがアクティブかどうか
+player_pausing=0											//停止中かどうか
+track_duration_ms=0											//再生中の楽曲の秒数
+track_duration_ms_s=""
+track_duration_ms_ms=""
+track_duration_m=0
+track_duration_s=0
+track_progress_ms=0
+track_progress_ms_s=""
+track_progress_ms_ms=""
+track_progress_ms_m=0
+track_progress_ms_s=0
+progress_bar_cnt=0
+progress_bar_rb=0
+
+dummy=""													//ダミー
+
+//-----------------------------言語変更用変数初期化-----------------------------
+
+tab_name_main=""
+tab_name_set1=""
+tab_name_set2=""
+tab_name_account=""
+tab_name_info=""
+main_info_initialization=""
+set1_info_track=""
+set1_info_artist=""
+set1_info_album=""
+set1_info_url=""
+set1_info_artworksw=""
+set1_info_overlapsw=""
+set1_info_underinfo=""
+set2_info_wallpaper=""
+set2_info_wallpaperbt=""
+set2_info_autotweetsw=""
+set2_info_theme=""
+
+//------------------------------------------------------------------------------
+
+track_name_data="{TRACK_NAME}"
+artist_name_data="{ARTIST_NAME}"
+album_name_data="{ALBUM_NAME}"
+track_url_data="{TRACK_URL}"
+
+
+exist"data/ini/dc09453327"
+if strsize=0 : develop=1
+
+
+//構成データ読み込み
+
+//spotify認証済みかどうか
+notesel spotify_setup_flag
+noteload "data/ini/spotify_setup"
+
+
+//twitter認証済みかどうか
+notesel twitter_setup_flag
+noteload "data/ini/twitter_setup"
+
+
+//数値変換
+spotify_setup_flag=int(spotify_setup_flag)
+twitter_setup_flag=int(twitter_setup_flag)
+
+
+//SpotifyのAPIキー
+notesel s_key
+noteload "s_key.txt"
+noteget client_id,0
+noteget client_secret,1
+
+
+//TwitterのAPIキー
+notesel t_key
+noteload "t_key.txt"
+noteget consumer_key,0
+noteget consumer_secret,1
+
+
+//twitterアカウント設定データ
+notesel account_ini
+noteload "data/ini/accountset"
+noteget account_default,0
+
+
+//TwitterのAPI情報
+//一回も認証登録ができていない場合読み込ませない
+if twitter_setup_flag=1{
+notesel t_apiinfo
+noteload "data/api/twitter/"+account_default+".spa"
+noteget t_access_token,1
+noteget t_access_secret,2
+}
+
+
+//SpotifyAPIトークンセット(改行済み)
+notesel s_token_set
+noteload "data/api/s_access_token"
+noteget access_token,0
+noteget refresh_token,1
+
+
+//ツイート内容
+notesel tweet_data
+noteload "data/ini/tweet_data"
+
+notesel font_set
+noteload "data/font/font_set"
+font_set=int(font_set)
+
+//Set1タブで設定された項目セット
+notesel set1_ini
+noteload "data/ini/set1"
+noteget artist_pun,0
+noteget discord_cmd,1
+
+
+//Set2タブで設定された項目セット
+notesel set2_ini
+noteload "data/ini/set2"
+noteget wp_pass,0
+noteget auto_tweet_sw,1
+noteget theme_list_num,2
+noteget language_list_num,3
+noteget theme_name,4
+noteget language_name,5
+noteget wp_artwork,6
+noteget artwork_switch,7
+noteget overtweet_switch,8
+noteget window_active,9
+noteget develop_code,10
+
+
+//数値変換
+auto_tweet_sw=int(auto_tweet_sw)
+theme_list_num=int(theme_list_num)
+language_list_num=int(language_list_num)
+wp_artwork=int(wp_artwork)
+artwork_switch=int(artwork_switch)
+overtweet_switch=int(overtweet_switch)
+window_active=int(window_active)
+
+
+//テーマ一覧取得
+dirlist theme_list,"data/theme/*.spt",0
+strrep theme_list,".spt",""
+
+//言語ファイル一覧取得
+dirlist language_list,"data/language/*.spl",0
+strrep language_list,".spl",""
+
+//登録アカウント一覧取得
+dirlist twitter_user_list,"data/api/twitter/*.spa",0
+strrep twitter_user_list,".spa",""
+
+//指定されていたテーマ読み込み
+notesel spt_data
+noteload "data/theme/"+theme_name+".spt"
+noteget spt_bc_data,0
+split spt_bc_data,",",spt_bc(0),spt_bc(1),spt_bc(2)//背景色
+noteget spt_tc_data,1
+split spt_tc_data,",",spt_tc(0),spt_tc(1),spt_tc(2)//テキスト色
+noteget spt_bi_data,2
+noteget spt_bi_tp,3
+
+
+//テーマ透明度
+//無記入になっていたら200に設定
+//上限は255
+if spt_bi_tp=""{
+	spt_bi_tp=200
+}else{
+	spt_bi_tp=int(spt_bi_tp)
+}
+
+
+//ラベル一覧
+//*spotify_authorize										//SpotifyのAPI認証
+//*twitter_authorize										//TwitterのAPI認証
+//*s_get_code_authorize										//Spotifyのcode_authorizeを受信する
+//*s_get_access_token										//Spotifyのaccess_tokenを受信する
+//*t_get_access_token										//Twitterのaccess_tokenを受信する
+//*tweet_spotify_info										//ツイッターに投稿
+//*open_track_url											//楽曲のURLをブラウザで開く
+
+
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+
+AddFontResourceA font_pass
+
+//タブウィンドウ作成
+//InsertTabでタブを追加
+pos 0,0
+CreateTab 400,250,0
+hTabControl = stat
+
+//壁紙画像読み込み
+//万が一に備えてpassが無記入で保存されていた場合デフォルト壁紙に差し替えて保存
+if wp_pass=""{
+	wp_pass="data/pic/default_wallpaper.jpg"
+	notesel set2_ini
+	noteload "data/ini/set2"
+	noteadd wp_pass,0,1
+
+	exist"data/ini/set2"
+	if strsize>0:delete"data/ini/set2"
+	bsave "data/ini/set2",set2_ini,strlen(set2_ini)
+	
+}
+
+//壁紙設定
+exist wp_pass
+if strsize<0:dialog"画像ファイルが見つかりませんでした\n初期設定に変更します",1,"エラー":wp_pass="data/pic/default_wallpaper.jpg"
+buffer 11
+picload wp_pass
+//ブレンドする黒boxf
+buffer 12,400,230 : boxf
+
+//テーマファイル(.spt)に画像が設定されていたら
+//その画像を読み込む
+if spt_bi_data!""{
+buffer 13,400,250
+picload "data/theme/image/"+spt_bi_data+""
+}
+
+//メインタブ追加
+tab_name="メイン"
+nkfcnv tab_name,tab_name,"Ws"
+InsertTab tab_name
+
+
+//背景色
+color int(spt_bc(0)),int(spt_bc(1)),int(spt_bc(2)):boxf
+
+//背景画像
+//画像がある場合のみ表示
+if spt_bi_data!""{
+pos 0,0
+gcopy 13,0,0,400,230
+gmode 3,400,230,spt_bi_tp
+pos 0,0
+gcopy 12,0,0,400,230
+}
+//文字色
+color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+
+
+font "IPAexゴシック",16
+
+
+objsize 300,30
+pos 85,25
+mes "初期設定を完了させてください"
+
+
+pos 50,70
+button goto"Spotifyの認証",*spotify_authorize
+pos 50,115
+button goto"Twitterの認証",*twitter_authorize
+pos 50,160
+button goto"利用開始",*start
+
+
+if spotify_setup_flag=1:objprm 0,"Spotifyは認証済みです":objenable 0,0
+if twitter_setup_flag=1:objprm 1,"Twitterは認証済みです":objenable 1,0
+
+
+tab_name="設定1"
+nkfcnv tab_name,tab_name,"Ws"
+InsertTab tab_name
+
+
+color int(spt_bc(0)),int(spt_bc(1)),int(spt_bc(2)):boxf
+if spt_bi_data!""{
+pos 0,0
+gcopy 13,0,0,400,230
+gmode 3,400,230,spt_bi_tp
+pos 0,0
+gcopy 12,0,0,400,230
+}
+color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+
+
+mesbox tweet_data,392,90,1,500
+
+
+font "IPAexゴシック",13
+
+
+pos 0,110
+input track_name_data,100,18
+pos 0,93
+mes "楽曲名"
+
+
+pos 0,150
+input artist_name_data,100,18
+pos 0,133
+mes "アーティスト名"
+
+
+pos 120,110
+input album_name_data,100,18
+pos 120,93
+mes "アルバム名"
+
+
+pos 120,150
+input track_url_data,100,18
+pos 120,133
+mes "楽曲のURL"
+
+pos 240,110
+input artist_pun,147,18
+pos 240,93
+mes "アーティスト区切り文字"
+
+pos 240,150
+input discord_cmd,147,18
+pos 240,133
+mes "Discordコマンド"
+
+font "IPAexゴシック",12
+pos 40,205
+mes "設定はメインウィンドウへ移動しない限り反映されません"
+
+
+//編集不可オブジェクトに変換
+sendmsg objinfo(1,2),$CF,1
+sendmsg objinfo(2,2),$CF,1
+sendmsg objinfo(3,2),$CF,1
+sendmsg objinfo(4,2),$CF,1
+
+
+tab_name="設定2"
+nkfcnv tab_name,tab_name,"Ws"
+InsertTab tab_name
+
+
+color int(spt_bc(0)),int(spt_bc(1)),int(spt_bc(2)):boxf
+if spt_bi_data!""{
+pos 0,0
+gcopy 13,0,0,400,230
+gmode 3,400,230,spt_bi_tp
+pos 0,0
+gcopy 12,0,0,400,230
+}
+color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+
+
+font "IPAexゴシック",15
+
+/*pos 2,2
+mes "壁紙画像(再起動時に適用されます)"
+input wp_pass,300,20*/
+
+
+objsize 12,12
+pos 5,48
+chkbox "",auto_tweet_sw
+pos 27,46
+mes "自動ツイートを無効"
+
+objsize 12,12
+pos 195,48
+chkbox "",artwork_switch
+pos 215,47
+mes "アートワークを投稿する"
+
+/*objsize 12,12
+pos 175,72
+chkbox "",wp_artwork
+pos 200,72
+mes "アートワークを壁紙にする"*/
+wp_artwork = 1
+
+objsize 12,12
+pos 5,72
+chkbox "",overtweet_switch
+pos 28,71
+mes "時刻を挿入する"
+
+objsize 12,12
+pos 5,98
+chkbox "",window_active
+pos 25,97
+mes "ウィンドウを最前面にする"
+
+objsize 200,30
+pos 25,15
+mes "テーマ(要再起動)"
+pos 160,12
+combox theme_list_num,,theme_list
+
+/*pos 200,70
+mes "言語(未実装)"
+pos 200,90
+combox language_list_num,,language_list*/
+
+/*objsize 80,20
+pos 307,18
+button goto"参照",*wp_pass_d*/
+
+objsize 392,25
+pos 0,199
+button goto"全設定初期化",*set_initialization
+
+/*font "IPAexゴシック",12
+pos 42,185
+mes "設定はMainウィンドウへ移動しない限り保存されません"*/
+
+
+tab_name="アカウント設定"
+nkfcnv tab_name,tab_name,"Ws"
+InsertTab tab_name
+
+
+color int(spt_bc(0)),int(spt_bc(1)),int(spt_bc(2)):boxf
+if spt_bi_data!""{
+pos 0,0
+gcopy 13,0,0,400,230
+gmode 3,400,230,spt_bi_tp
+pos 0,0
+gcopy 12,0,0,400,230
+}
+color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+
+pos 3,3
+font "IPAexゴシック",15
+mes "アカウント一覧(@id)"
+objsize 385,20
+combox twitter_user_num,150,twitter_user_list
+
+font "IPAexゴシック",13
+pos 5,180
+
+if account_default=""{
+	mes "アカウントが登録されていません"
+}else{
+	mes "現在使用中のアカウント : @"+account_default
+}
+
+objsize 100,20
+pos 5,200
+button goto"アカウント追加",*twitter_authorize_p
+
+objsize 100,20
+pos 110,200
+button goto"アカウント削除",*delete_twitter
+
+objsize 100,20
+pos 287,200
+button goto"このアカウントを使う",*twitter_decision
+
+if twitter_user_list="":gsel 4:objenable 2,0:objenable 3,0
+
+
+tab_name="情報"
+nkfcnv tab_name,tab_name,"Ws"
+InsertTab tab_name
+
+
+color int(spt_bc(0)),int(spt_bc(1)),int(spt_bc(2)):boxf
+if spt_bi_data!""{
+pos 0,0
+gcopy 13,0,0,400,230
+gmode 3,400,230,spt_bi_tp
+pos 0,0
+gcopy 12,0,0,400,230
+}
+color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+
+
+pos 10,40
+picload "data/pic/swonpy_logo_info.png",1
+
+
+font "IPAexゴシック",30
+pos 178,85
+mes "Snowpy"
+
+
+font "IPAexゴシック",14
+pos 298,100
+mes "Ver. 1.35"
+
+
+font "IPAexゴシック",12
+pos 180,130
+mes "Developed by Cube"
+
+if develop=1{
+
+	tab_name="DEVELOP"
+	nkfcnv tab_name,tab_name,"Ws"
+	InsertTab tab_name
+
+	mesbox develop_twitter,392,90,1,500
+	mesbox develop_spotify,392,90,1,500
+	objsize 100, 20
+	chkbox "Stop updating.",stopupdating
+
+}
+
+	
+
+
+gsel 1, 1
+gsel
+oncmd gosub *change_tab, $4E
+
+
+//どっちとも認証済みだったらそのまま実行
+if spotify_setup_flag=1&twitter_setup_flag=1:goto,*start
+stop
+
+////////////////////////////////////////////////////////////////////////ここまで///////////////////////////////////////////////////////////////////////
+
+*spotify_authorize
+
+//認証画面をブラウザで開く
+exec "https://accounts.spotify.com/authorize?client_id="+client_id+"&response_type=code&redirect_uri="+redirect_url+"&scope=user-read-playback-state user-modify-playback-state",16
+
+*s_get_code_authorize
+
+	//http://localhost:12001のサーバを設置
+	
+	sockmake 0,12001
+	
+	//エラー処理
+	if stat=1:dialog"TCP/IPがWindowsにインストールされていません\nインストールしてください":end
+	if stat=2:dialog"ソケットの初期化に失敗しました\nもう一度実行します\n何度も失敗する場合は開発者までお問い合わせください":goto,*s_get_code_authorize
+	if stat=3:dialog"Socketのバインドに失敗しました\nもう一度実行します\n何度も失敗する場合は開発者までお問い合わせください":goto,*s_get_code_authorize
+
+	repeat
+	sockwait 0
+	if stat=0:break
+	wait 1
+	loop
+
+	//返ってきたコードを取得
+	sockget code_authorize,247,0
+
+	sockclose 0
+	strrep code_authorize,"GET /?code=",""
+
+*s_get_access_token
+	
+	//b64encode client_id_base64,client_id
+	//b64encode client_secret_base64,client_secret
+	
+	netinit
+	neturl "https://accounts.spotify.com/api/"
+	//netheader "Authorization: Basic "+client_id_base64+":"+client_secret_base64+"\n\n"
+	post_authorize="grant_type=authorization_code&code="+code_authorize+"&redirect_uri="+redirect_url+"&client_id="+client_id+"&client_secret="+client_secret+""
+	netrequest_post"token",post_authorize
+	
+	repeat
+	netexec waitres
+	if waitres=1:break	
+	await 1
+	loop
+	
+	netgetv token_authorization
+	
+	netterm
+	
+	dialog "認証が完了しました\n開かれたタブは閉じてください"
+	
+	//アクセストークンとリフレッシュトークンを取り出す
+	jsonopen pti_json,token_authorization
+	jsongets access_token,"access_token",pti_json
+	jsongets refresh_token,"refresh_token",pti_json
+	jsonclose
+
+	//トークンを保存用にセット
+	s_token_set=""+access_token+"\n"+refresh_token+""
+
+	//トークンの保存
+	exist"data/api/s_access_token"
+	if strsize>0:delete"data/api/s_access_token"
+	bsave "data/api/s_access_token",s_token_set,strlen(s_token_set)
+
+	//setup済みflagを保存
+	spotify_setup_flag=1
+	spotify_setup_flag=str(spotify_setup_flag)
+	exist"data/ini/spotify_setup"
+	if strsize>0:delete"data/ini/spotify_setup"
+	bsave "data/ini/spotify_setup",spotify_setup_flag
+	spotify_setup_flag=int(spotify_setup_flag)
+	
+	gsel 1
+	objprm 0,"Spotifyは認証済みです":objenable 0,0
+	stop
+
+
+*twitter_authorize
+
+	//TsubuyakiSoup.modを使用
+
+	tCupInit"testClient",consumer_key,consumer_secret,10
+	t_address = getAuthorizeAddress()
+	exec t_address,16
+
+	screen 50,200,100,8
+	gsel 50,2
+	title"PINの入力"
+	
+	pos 15,10
+	mes "PINを入力してください"
+	pos 50,35
+	input tapin,100,20
+	pos 67,60
+	button "OK",*t_get_access_token
+	stop
+
+*t_get_access_token
+
+	if tapin="":dialog "PINを入力してください":stop
+	
+	publishAccessToken t_access_token,t_access_secret,t_userdata,tapin
+	
+	t_apiinfo=""
+	t_apiinfo+=t_userdata+"\n"
+	t_apiinfo+=t_access_token+"\n"
+	t_apiinfo+=t_access_secret
+
+	split t_userdata,",",dummy,t_userdata
+
+	if instr(twitter_user_list,0,t_userdata)!-1{
+		strrep twitter_user_list,t_userdata+"\n",""
+	}
+
+	if instr(twitter_user_list,0,t_userdata+"\n")!-1{
+		strrep twitter_user_list,t_userdata,""
+	}
+
+	twitter_user_list+=t_userdata+"\n"
+
+	gsel 4
+	objprm 0,twitter_user_list
+	objprm 0,0
+	
+	exist"data/api/twitter/"+t_userdata+".spa"
+	if strsize>0:delete"data/api/twitter/"+t_userdata+".spa"
+	bsave "data/api/twitter/"+t_userdata+".spa",t_apiinfo,strlen(t_apiinfo)
+
+	exist"data/ini/accountset"
+	if strsize>0:delete"data/ini/accountset"
+	bsave "data/ini/accountset",t_userdata,strlen(t_userdata)
+
+	dialog "追加認証が完了しました\n開かれたタブは閉じてください"
+
+	gsel 50,-1
+
+	//setup済みflagを保存
+	twitter_setup_flag=1
+	twitter_setup_flag=str(twitter_setup_flag)
+	exist"data/ini/twitter_setup"
+	if strsize>0:delete"data/ini/twitter_setup"
+	bsave "data/ini/twitter_setup",twitter_setup_flag
+	twitter_setup_flag=int(twitter_setup_flag)
+
+	tapin=""
+
+	gsel 1
+	if twitter_setup_flag=1:objprm 1,"Twitterは認証済みです":objenable 1,0
+	gsel 4:objenable 2,1:objenable 3,1
+	
+	stop
+
+*start
+
+	loop_now=1
+
+	color 255,255,255
+	
+	if spotify_setup_flag=0&twitter_setup_flag=0:dialog "認証をしてから利用開始してください":stop
+	if spotify_setup_flag=0:dialog "Spotifyの認証を行ってください":stop
+	if twitter_setup_flag=0:dialog "Twitterの認証を行ってください":stop
+
+	tweet_data_c=tweet_data
+	tweet_data_s=tweet_data
+	
+	gsel 1
+	cls 4
+	
+	/*
+	pos 0,0
+	gcopy 11,0,0,400,138
+	gmode 3,400,138,200
+	pos 0,0
+	gcopy 12,0,0,400,138
+	*/
+
+	/*objsize 393,23
+	pos 0,137
+	button goto"楽曲の詳細ページを開く",*open_track_url
+	pos 0,159
+	button goto"手動でつぶやく",*tweet_spotify_info
+	pos 0,181
+	button goto"Discordに送信",*discord_bot
+	pos 0,201
+	button goto"動作停止",*do_stop*/
+
+	gsel 4:objenable 0,0
+	gsel 4:objenable 1,0
+	gsel 4:objenable 2,0
+	gsel 4:objenable 3,0
+
+	if track_name!""{
+		if is_local = 0 and wp_artwork = 1{
+			buffer 50:picload "data/pic/artwork.jpg":gsel 1
+		}else{
+			buffer 50:picload "data/theme/image/"+spt_bi_data+"":gsel 1
+		}
+
+		buffer 60
+		if is_local = 0{
+			gzoom 440,440,50,40,70,640,640,1
+		}else{
+			gcopy 50,0,0,400,250
+		}
+
+		gsel 1
+		clrobj 0,-1
+
+		buffer 51,393*2,23
+		pos 0,0
+		gcopy 60,0,137,393,160
+		pos 393,0
+		gcopy 60,0,137,393,160
+		gmode 3,400,137,220
+		pos 393,0
+		gcopy 12,0,0,400,137
+
+		color 255,255,255
+		font "IPAexゴシック",13
+		pos 123,5
+		mes "楽曲の詳細ページを開く"
+		pos 516,5
+		mes "楽曲の詳細ページを開く"
+
+		gsel 1
+		
+		objsize 393,23
+
+		objimage 51,393,0,,,0,0
+		pos 0,137
+		button goto"",*open_track_url
+
+		buffer 52,393*2,23
+		pos 0,0
+		gcopy 60,0,159,393,182
+		pos 393,0
+		gcopy 60,0,159,393,182
+		gmode 3,400,137,220
+		pos 393,0
+		gcopy 12,0,0,400,137
+
+		color 255,255,255
+		font "IPAexゴシック",13
+		pos 149,5
+		mes "手動でつぶやく"
+		pos 542,5
+		mes "手動でつぶやく"
+
+		gsel 1
+		
+		objsize 393,23
+
+		objimage 52,393,0,,,0,0
+		pos 0,159
+		button goto"",*tweet_spotify_info
+
+		buffer 53,393*2,23
+		pos 0,0
+		gcopy 60,0,181,393,204
+		pos 393,0
+		gcopy 60,0,181,393,204
+		gmode 3,400,137,220
+		pos 393,0
+		gcopy 12,0,0,400,137
+
+		color 255,255,255
+		font "IPAexゴシック",13
+		pos 149,4
+		mes "Discordに送信"
+		pos 542,4
+		mes "Discordに送信"
+
+		gsel 1
+		
+		objsize 393,23
+
+		objimage 53,393,0,,,0,0
+		pos 0,181
+		button goto"",*discord_bot
+
+		buffer 54,393*2,23
+		pos 0,0
+		gcopy 60,0,201,393,224
+		pos 393,0
+		gcopy 60,0,201,393,224
+		gmode 3,400,137,220
+		pos 393,0
+		gcopy 12,0,0,400,137
+
+		color 255,255,255
+		font "IPAexゴシック",13
+		pos 166,5
+		mes "動作停止"
+		pos 559,5
+		mes "動作停止"
+
+		gsel 1
+		
+		objsize 393,23
+
+		objimage 54,393,0,,,0,0
+		pos 0,201
+		button goto"",*do_stop
+
+
+		if is_local=1{
+			gsel 1:objenable 0,0
+		}else{
+			is_local=0
+			gsel 1:objenable 0,1
+		}
+	}
+
+
+	main_loop_cnt=300
+	max_sizet=0
+	scroll_now_sw=0
+	aw_set=0
+
+	randomize
+	
+	/***********************************************************************
+	メインループ
+	
+	最初に楽曲情報を取得しその次に文字を特定の時間スクロールさせます
+	各々の文字のサイズをピクセル単位で取得し
+	取得した文字ぴったりのサイズのバッファを作りgmodeでRGB"0"(つまり真っ黒)を
+	透明色として、gcopyでwindowID 1 に描画させています
+	詳しい説明は別途のhspファイルに載っていますのでそちらを御覧ください
+	***********************************************************************/
+	
+*main//メインループ
+
+	//3秒ごとに楽曲情報をAPIで取得
+	//wait 1を挟んでいるので 1秒 = 100 になる
+
+	if window_active=1:gsel 0,2:else:gsel 0,1
+
+	if main_loop_cnt=300:gosub,*main2
+
+	gsel 1
+	
+	main_loop_cnt++
+	info_loop_cnt++
+	progress_bar_cnt++
+
+	if currently_playing_type!"ad"{
+	
+		if mea_cnt=0{
+
+		if track_name!""{
+			buffer 16//ピクセルサイズ計測用バッファ
+			color 0,0,0:boxf:color 255,255,255
+			font "IPAexゴシック",13
+			mes track_name
+			track_name_x=ginfo_mesx
+			track_name_y=ginfo_mesy
+		}
+
+		if artist_name!""{
+			buffer 16//ピクセルサイズ計測用バッファ
+			color 0,0,0:boxf:color 255,255,255
+			font "IPAexゴシック",13
+			mes artist_name_all
+			artist_name_x=ginfo_mesx
+			artist_name_y=ginfo_mesy
+		}
+
+		if album_name!""{
+			buffer 16//ピクセルサイズ計測用バッファ
+			color 0,0,0:boxf:color 255,255,255
+			font "IPAexゴシック",13
+			mes album_name
+			album_name_x=ginfo_mesx
+			album_name_y=ginfo_mesy
+		}
+	
+		//楽曲名をバッファに描画
+		//背景は黒 (RGB ALL"0")
+		if track_name!""{
+			buffer 30,track_name_x,track_name_y
+			color 0,0,0:boxf:color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+			font "IPAexゴシック",13
+			mes track_name
+		}
+	
+		//楽曲名をバッファに描画
+		//背景は黒 (RGB ALL"0")
+		if artist_name!""{
+			buffer 31,artist_name_x,artist_name_y
+			color 0,0,0:boxf:color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+			font "IPAexゴシック",13
+			mes artist_name_all
+		}
+	
+		//楽曲名をバッファに描画
+		//背景は黒 (RGB ALL"0")
+		if album_name!""{
+			buffer 32,album_name_x,album_name_y
+			color 0,0,0:boxf:color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+			font "IPAexゴシック",13
+			mes album_name
+		}
+	
+			gsel 1
+			//スクロールの上限値
+			track_name_x_limit=track_name_x
+			artist_name_x_limit=artist_name_x
+			album_name_x_limit=album_name_x
+	
+			//max_sizetにxサイズの最大値を格納
+			if track_name_x_limit<artist_name_x_limit{
+				max_sizet=artist_name_x_limit
+			}else{
+				max_sizet=track_name_x_limit
+			}
+	
+			if max_sizet<album_name_x_limit:max_sizet=album_name_x_limit
+	
+			//計測済み
+			mea_cnt=1
+	
+		}
+	
+		redraw 0,0,0,400,138
+	
+		//画面上部表示初期化
+		color 255,255,255:boxf 0,0,400,137
+	
+		//壁紙を設定
+		if wp_artwork=0{
+			pos 0,0
+			gcopy 13,0,0,400,250
+			gmode 3,400,250,200
+			pos 0,0
+			gcopy 12,0,0,400,250
+		}else{
+			gsel 1
+			pos 0,0
+			gsel 1
+			if is_local = 0{
+				gzoom 440,440,50,40,70,640,640,1
+			}else{
+				gcopy 13,0,0,400,250
+			}
+			gmode 3,400,137,200
+			pos 0,0
+			gcopy 12,0,0,400,137
+		}
+
+		if progress_bar_cnt=100{
+			if player_pausing=0:progress_bar_rb++
+			progress_bar_cnt=0
+		}
+		line 0,135,progress_bar_rb,135
+	
+		font "IPAexゴシック",25
+		pos 130,20
+		//color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+		mes "NowPlaying"
+	
+		font "IPAexゴシック",13
+		pos 130,60
+		//color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+		mes "Track:"
+	
+		font "IPAexゴシック",13
+		pos 130,85
+		//color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+		mes "Artist:"
+	
+		font "IPAexゴシック",13
+		pos 130,110
+		//color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+		mes "Album:"
+	
+		info_loop_wait++
+		scroll_cnt++
+	
+		if scroll_cnt<max_sizet+600{
+		if info_loop_wait>500{
+	
+		scroll_now_sw=1
+		
+		if track_name!""{
+			if track_name_x>220{
+			if track_name_loop_stop=0{
+				gsel 1
+				gmode 2,track_name_x,track_name_y
+	
+				pos 170,60
+				gcopy 30,track_name_x_cl,0,track_name_x,track_name_y
+				track_name_x_cl++:track_name_x++
+	
+				if track_name_x_cl=track_name_x_limit:track_name_loop_stop=1
+			}
+			}else{
+				pos 170,60
+				//color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+				mes track_name
+			}
+		}
+	
+		if artist_name!""{
+			if artist_name_x>220{
+			if artist_name_loop_stop=0{
+				gsel 1
+				gmode 2,artist_name_x,artist_name_y
+	
+				pos 170,85
+				gcopy 31,artist_name_x_cl,0,artist_name_x,artist_name_y
+				artist_name_x_cl++:artist_name_x++
+	
+				if artist_name_x_cl=artist_name_x_limit:artist_name_loop_stop=1
+			}
+			}else{
+				pos 170,85
+				//color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+				mes artist_name_all
+			}
+		}
+	
+		if album_name!""{
+			if album_name_x>210{
+			if album_name_loop_stop=0{
+				gsel 1
+				gmode 2,album_name_x,album_name_y
+	
+				pos 175,110
+				gcopy 32,album_name_x_cl,0,album_name_x,album_name_y
+				album_name_x_cl++:album_name_x++
+	
+				if album_name_x_cl=album_name_x_limit:album_name_loop_stop=1
+			}
+			}else{
+				pos 175,110
+				//color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+				mes album_name
+			}
+		}
+	
+		}else{
+	
+			scroll_now_sw=0
+	
+			pos 170,60
+			//color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+			mes track_name
+	
+			pos 170,85
+			//color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+			mes artist_name_all
+	
+			pos 175,110
+			//color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+			mes album_name
+	
+		}
+		}else{
+	
+			scroll_now_sw=0
+	
+			pos 170,60
+			//color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+			mes track_name
+	
+			pos 170,85
+			//color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+			mes artist_name_all
+	
+			pos 175,110
+			//color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+			mes album_name
+	
+		}
+	
+		if scroll_cnt=1000+max_sizet+500{
+			scroll_cnt=0:info_loop_wait=0
+			track_name_x_c=210
+			artist_name_x_c=210
+			album_name_x_c=210
+	
+			track_name_x_cl=0
+			artist_name_x_cl=0
+			album_name_x_cl=0
+	
+			track_name_loop_stop=0
+			artist_name_loop_stop=0
+			album_name_loop_stop=0
+		}
+
+		//scroll_now_sw=0
+
+		color awbc_r,awbc_g,awbc_b
+		boxf 7,12,118,123
+
+		//line 0,136,395,136
+
+		pos 9,14
+		gzoom 108,108,20,0,0,artwork_size_x,artwork_size_y,1
+
+	}else{
+
+		buffer 20
+		picload "data/pic/none_artwork.png"
+
+		gsel 1
+
+		redraw 0,0,0,400,138
+		
+		pos 0,0
+		gcopy 11,0,0,400,250
+		gmode 3,400,137,200
+		pos 0,0
+		gcopy 12,0,0,400,137
+
+		pos 9,14
+		gzoom 108,108,20,0,0,640,640,1
+
+		font "IPAexゴシック",25
+
+		pos 195,55://color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+		mes "広告再生中"
+
+	}
+
+	
+		
+	gsel 1
+	redraw 1,0,0,400,137
+
+	wait 1
+		
+	goto,*main
+	
+*main2
+	
+	netinit
+	neturl player_api_url
+	netheader "Authorization: Bearer "+access_token+"\n"
+	netrequest_get "currently-playing"
+
+	repeat
+	netexec waitres
+	if waitres=1:break
+	wait 1
+	loop
+
+	netgetv playing_track_info
+	
+	if playing_track_info="":/*dialog "楽曲が再生されていません"*/:goto,*do_stop
+
+	netterm
+
+	netinit
+	neturl player_api_url
+	netheader "Authorization: Bearer "+access_token+"\n"
+	netrequest_get "devices"
+
+	repeat
+	netexec waitres
+	if waitres=1:break
+	wait 1
+	loop
+
+	netgetv playing_device_info
+	
+	netterm
+
+	//conv_crlf playing_track_info,0
+	//conv_crlf playing_device_info,0
+	
+	develop_spotify = playing_track_info
+	
+	if develop=1{
+		if stopupdating=0{
+			gsel 6:objprm 1,develop_spotify:gsel 1
+		}
+	}
+			
+
+	//ローカルファイルかどうか
+	//ローカルファイルだった場合 1 そうでなければ 0 が代入されます
+	is_local=0
+	if instr(playing_track_info,0,"\"is_local\" : true,")!-1{
+		is_local=1
+	}
+	
+	if do_restart=1{
+
+	//各変数の初期化
+		main_loop_cnt=0
+		max_sizet=0
+		info_loop_cnt=0
+		info_loop_wait=0
+		scroll_cnt=0
+		mea_cnt=0
+		track_name_x_limit=0
+
+		track_name_x_c=210
+		artist_name_x_c=210
+		album_name_x_c=210
+
+		track_name_x_cl=0
+		artist_name_x_cl=0
+		album_name_x_cl=0
+
+		track_name_loop_stop=0
+		artist_name_loop_stop=0
+		album_name_loop_stop=0
+		
+		do_restart=0
+	}
+
+	//アクセストークンの期限切れ
+	//リフレッシュトークンで再発行
+	if instr(playing_track_info,0,"\"error\"")!-1{
+		netinit
+		neturl "https://accounts.spotify.com/api/"
+		//netheader "Authorization: Basic "+client_id_base64+":"+client_secret_base64+"\n\n"
+		post_authorize="grant_type=refresh_token&refresh_token="+refresh_token+"&client_id="+client_id+"&client_secret="+client_secret+""
+		netrequest_post"token",post_authorize
+
+		repeat 10
+		netexec waitres
+		if waitres=1:break	
+		await 1
+		loop
+	
+		netgetv token_authorization
+		netterm
+	
+		//アクセストークンとリフレッシュトークンを取り出す
+		jsonopen pti_json,token_authorization
+		jsongets access_token,"access_token",pti_json
+		jsongets refresh_token,"refresh_token",pti_json
+
+		s_token_set=""+access_token+"\n"+refresh_token+""
+
+		//トークンの保存
+		exist"data/api/s_access_token"
+		if strsize>0:delete"data/api/s_access_token"
+		bsave "data/api/s_access_token",s_token_set,strlen(s_token_set)
+
+		goto,*start
+		
+	}
+
+	artist_name_all=""
+	
+	//以下JSONからデータ引き抜き
+	jsonopen pti_json(0),playing_track_info
+	jsongetobj pti_json(0),"item",pti_json(0)
+	jsongets track_name,"name",pti_json(0)
+
+	jsongeti track_duration_ms,"duration_ms",pti_json(0)
+	track_duration_ms_s = str(track_duration_ms)
+	track_duration_ms_ms = strmid(track_duration_ms_s,-1,3)
+	strrep track_duration_ms_s,track_duration_ms_ms,""
+	
+	track_duration_ms = int(track_duration_ms_s)
+	track_duration_m = track_duration_ms / 60
+	track_duration_s = track_duration_ms \ 60
+	
+	jsongetobj pti_json(1),"artists",pti_json(0)
+	jsonnext pti_json(1),pti_json(1),2
+
+	jsongets artist_name(0),"name",pti_json(1)
+	if stat=1:artist_name_all=""//見つからなかった場合
+	artist_name_all+=artist_name(0)
+
+	//Spotifyのアーティスト欄は複数ある場合がある(ft.等)
+	//それに対応させるためアーティスト名を取得できるだけ取得する必要がある
+	repeat
+	jsonnext pti_json(1),pti_json(1),0
+	jsongets artist_name(cnt+1),"name",pti_json(1)
+	if stat=1:break//見つからなかった場合
+	artist_name_all+=""+artist_pun+""+artist_name(cnt+1)
+	await 1
+	loop
+
+	jsongetobj pti_json(1),"external_urls",pti_json(0)
+	jsonnext pti_json(1),pti_json(1),1
+
+	//ローカルファイルのためURLは取得できない
+	if is_local=0{
+	repeat 2
+	jsongets track_url,"spotify",pti_json(1)
+	jsonnext pti_json(1),pti_json(1),0
+	loop
+	}else{
+	track_url=""
+	}
+	
+	jsonclose
+	
+	//アルバム名取得
+	jsonopen pti_json(0),playing_track_info
+	jsongetobj pti_json,"item",pti_json(0)
+	jsonnext pti_json(0),pti_json(0),2
+	jsongets album_name,"name",pti_json(0)
+	if stat=1:album_name=""//見つからなかった場合
+	jsonclose
+
+	
+
+	//ローカルファイルのためアートワーク画像は取得できない
+	if is_local=0{
+	jsonopen pti_json_h(0),playing_track_info
+	jsongetobj pti_json_h(1),"item",pti_json_h(0)
+	jsonnext pti_json_h(0),pti_json_h(1),2
+	jsongetobj pti_json_h(1),"album",pti_json_h(0)
+	jsonnext pti_json_h(0),pti_json_h(1),2
+	jsongetobj pti_json_h(1),"images",pti_json_h(0)
+	jsonnext pti_json_h(0),pti_json_h(1),2
+	jsongets artwork_url,"url",pti_json_h(0)
+	jsonclose
+	}
+
+	jsonopen pti_json_h(0),playing_track_info
+	jsongets currently_playing_type,"currently_playing_type",pti_json_h(0)
+	jsonclose
+
+	jsonopen pti_json_h(0),playing_track_info
+	jsongeti track_progress_ms,"progress_ms",pti_json_h(0)
+	jsonclose
+
+	track_progress_ms_s = str(track_progress_ms)
+	track_progress_ms_ms = strmid(track_progress_ms_s,-1,3)
+	strrep track_progress_ms_s,track_progress_ms_ms,""
+	
+	track_progress_ms = int(track_progress_ms_s)
+	track_progress_m = track_progress_ms / 60
+	track_progress_s = track_progress_ms \ 60
+	//dialog str(track_progress_m)+"分"+str(track_progress_s)+"秒"
+
+	jsonopen pti_json(0),playing_device_info
+	jsongetobj pti_json(0),"devices",pti_json(0)
+	jsonnext pti_json(0),pti_json(0),2
+	repeat
+		jsongeti playing_device_active,"is_active",pti_json(0)
+		if playing_device_active = 1: break
+		jsonnext pti_json(0),pti_json(0),0
+		await 1
+	loop
+	jsongets playing_device_name,"name",pti_json(0)
+	jsonclose
+
+	jsonopen pti_json(0),playing_track_info
+	jsongetobj pti_json(1),"actions",pti_json(0)
+	jsonnext pti_json(0),pti_json(1),2
+	jsongetobj pti_json(1),"disallows",pti_json(0)
+	jsonnext pti_json(0),pti_json(1),2
+	jsongeti player_pausing,"pausing",pti_json(0)
+	if stat=1:player_pausing=0
+	
+	if player_pausing=1{
+		
+		tab_name="一時停止中"
+		nkfcnv tab_name,tab_name,"Ws"
+
+		gsel 0
+		stbar_text tab_name
+		
+	}else{
+		
+		tab_name="楽曲再生中 / "+playing_device_name+"で再生中" /// "+progress_ms_a+""
+		nkfcnv tab_name,tab_name,"Ws"
+
+		gsel 0
+		stbar_text tab_name
+
+	}
+
+	//UTF-8と仮定しSJIS(ShiftJIS)に変換
+	//返ってくるJSONはだいたいUTF-8
+	nkfcnv track_name,track_name,"Ww"
+	nkfcnv artist_name,artist_name,"Ww"
+	nkfcnv album_name,album_name,"Ww"
+
+	if is_local=0{
+		netinit
+		netdlname "data/pic/artwork.jpg"
+		netload artwork_url
+		netterm
+	}
+	
+	/*note_infodata=""
+	notesel note_infodata
+	noteadd ""+artist_name_all+"-"+track_name+"",0
+	notesave "track_data.txt"
+
+	notesel streamdeck_sw
+	noteload "sendswitch.txt"*/
+
+	if streamdeck_sw="1":goto,*tweet_spotify_info_streamdeck
+	
+	//一時的に保管しておいた曲名とアーティスト名が不一致のときツイート
+	if track_name=track_name_c&artist_name=artist_name_c{
+	}else{
+		
+		if is_local = 0 and wp_artwork = 1{
+			buffer 50:picload "data/pic/artwork.jpg":gsel 1
+		}else{
+			buffer 50:picload "data/theme/image/"+spt_bi_data+"":gsel 1
+		}
+
+		buffer 60
+		if is_local = 0{
+			gzoom 440,440,50,40,70,640,640,1
+		}else{
+			gcopy 50,0,0,400,250
+		}
+
+		gsel 1
+		clrobj 0,-1
+
+		buffer 51,393*2,23
+		pos 0,0
+		gcopy 60,0,137,393,160
+		pos 393,0
+		gcopy 60,0,137,393,160
+		gmode 3,400,137,220
+		pos 393,0
+		gcopy 12,0,0,400,137
+
+		color 255,255,255
+		font "IPAexゴシック",13
+		pos 123,5
+		mes "楽曲の詳細ページを開く"
+		pos 516,5
+		mes "楽曲の詳細ページを開く"
+
+		gsel 1
+		
+		objsize 393,23
+
+		objimage 51,393,0,,,0,0
+		pos 0,137
+		button goto"",*open_track_url
+
+		buffer 52,393*2,23
+		pos 0,0
+		gcopy 60,0,159,393,182
+		pos 393,0
+		gcopy 60,0,159,393,182
+		gmode 3,400,137,220
+		pos 393,0
+		gcopy 12,0,0,400,137
+
+		color 255,255,255
+		font "IPAexゴシック",13
+		pos 149,5
+		mes "手動でつぶやく"
+		pos 542,5
+		mes "手動でつぶやく"
+
+		gsel 1
+		
+		objsize 393,23
+
+		objimage 52,393,0,,,0,0
+		pos 0,159
+		button goto"",*tweet_spotify_info
+
+		buffer 53,393*2,23
+		pos 0,0
+		gcopy 60,0,181,393,204
+		pos 393,0
+		gcopy 60,0,181,393,204
+		gmode 3,400,137,220
+		pos 393,0
+		gcopy 12,0,0,400,137
+
+		color 255,255,255
+		font "IPAexゴシック",13
+		pos 149,4
+		mes "Discordに送信"
+		pos 542,4
+		mes "Discordに送信"
+
+		gsel 1
+		
+		objsize 393,23
+
+		objimage 53,393,0,,,0,0
+		pos 0,181
+		button goto"",*discord_bot
+
+		buffer 54,393*2,23
+		pos 0,0
+		gcopy 60,0,201,393,224
+		pos 393,0
+		gcopy 60,0,201,393,224
+		gmode 3,400,137,220
+		pos 393,0
+		gcopy 12,0,0,400,137
+
+		color 255,255,255
+		font "IPAexゴシック",13
+		pos 166,5
+		mes "動作停止"
+		pos 559,5
+		mes "動作停止"
+
+		gsel 1
+		
+		objsize 393,23
+
+		objimage 54,393,0,,,0,0
+		pos 0,201
+		button goto"",*do_stop
+
+
+		if is_local=1{
+			gsel 1:objenable 0,0
+		}else{
+			is_local=0
+			gsel 1:objenable 0,1
+		}
+		
+		
+		if auto_tweet_sw=0{
+		
+*tweet_spotify_info///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		if stat=1:tweet_button_sw=1
+
+		if do_restart=1:dialog"楽曲が再生されていません":stop
+
+*tweet_spotify_info_streamdeck
+		
+		//ローカルファイルの場合URLはNULLにする
+		if is_local=1:track_url=""
+		
+		//一時的に保管
+		track_name_c=track_name
+		artist_name_c=artist_name
+		track_url_c=track_url
+		album_name_c=album_name
+		
+		//ローカルファイルでURLがない場合変数を空にする
+		//(前回聴いていた楽曲のURLと一緒だった場合)
+		
+		tCupInit "test",consumer_key,consumer_secret,10
+		setAccessToken t_access_token,t_access_secret
+
+		//tab_flag=0の場合
+		//アクティブウィンドウがMainウィンドウ(ID0)のためツイート文はそのままの文でツイート
+		if tab_flag=0{
+			
+			strrep tweet_data,"{TRACK_NAME}",track_name
+			strrep tweet_data,"{ARTIST_NAME}",artist_name_all
+			strrep tweet_data,"{ALBUM_NAME}",album_name
+			strrep tweet_data,"{TRACK_URL}",track_url
+			
+			if overtweet_switch=0{
+				
+				if artwork_switch=1{
+					if is_local=0:media_upload artwork_pass,1,mediaids
+					if is_local=0:tweet tweet_data,,mediaids:else:tweet tweet_data
+				}else{
+					tweet tweet_data
+				}
+			
+			}else{
+				
+				if artwork_switch=1{
+					if is_local=0:media_upload artwork_pass,1,mediaids
+					if is_local=0:tweet tweet_data,,mediaids:else:tweet ""+tweet_data+"\n"+strf("%02d",gettime(4))+":"+strf("%02d",gettime(5))+":"+strf("%02d",gettime(6))+""
+				}else{
+					tweet ""+tweet_data+"\n"+strf("%02d",gettime(4))+":"+strf("%02d",gettime(5))+":"+strf("%02d",gettime(6))+""
+				}
+		}
+
+		develop_twitter="#####  HEADER  ######\n"+getResponseHeader()+"\n\n#####  BODY  #####\n"+getResponseBody()
+		if develop=1:gsel 6:objprm 0,develop_twitter:gsel 1
+		
+		//tab_flag=1の場合
+		//アクティブウィンドウがMainウィンドウ以外(ID0以外)のためツイート文は設定で変更前のツイート文
+		}else{
+			
+			strrep tweet_data_c,"{TRACK_NAME}",track_name
+			strrep tweet_data_c,"{ARTIST_NAME}",artist_name_all
+			strrep tweet_data_c,"{ALBUM_NAME}",album_name
+			strrep tweet_data_c,"{TRACK_URL}",track_url
+			
+			if overtweet_switch=0{
+				
+				if artwork_switch=1{
+					if is_local=0:media_upload artwork_pass,1,mediaids
+					if is_local=0:tweet tweet_data_c,,mediaids:else:tweet tweet_data_c
+				}else{
+					tweet tweet_data_c
+				}
+			}else{
+				if artwork_switch=1{
+					if is_local=0:media_upload artwork_pass,1,mediaids
+					if is_local=0:tweet tweet_data_c,,mediaids:else:tweet ""+tweet_data_c+"\n"+strf("%02d",gettime(4))+":"+strf("%02d",gettime(5))+":"+strf("%02d",gettime(6))+""
+				}else{
+					tweet ""+tweet_data_c+"\n"+strf("%02d",gettime(4))+":"+strf("%02d",gettime(5))+":"+strf("%02d",gettime(6))+""
+				}
+			}
+			
+		}
+	}
+
+		gsel 1 
+		
+
+		if tweet_button_sw=0{
+			if is_local=1{
+				buffer 20
+				picload "data/pic/none_artwork.png"
+			}else{
+				buffer 20
+				picload artwork_pass
+				artwork_size_x = ginfo_winx
+				artwork_size_y = ginfo_winy
+			}
+	
+		if currently_playing_type="ad"{
+
+			buffer 20
+			picload "data/pic/none_artwork.png"
+			
+			gsel 1
+			objenable 0,0
+			objenable 1,0
+
+		}else{
+			
+			gsel 1
+			objenable 0,1
+			objenable 1,1
+
+		}
+
+		/*notesel streamdeck_sw
+		noteload "sendswitch.txt"
+		noteadd "0",0,1
+		notesave "sendswitch.txt"*/
+		
+		gsel 20
+		pget rnd(641),rnd(641)
+
+		awbc_r=ginfo_r:awbc_g=ginfo_g:awbc_b=ginfo_b
+		
+		}
+
+		if tweet_button_sw=0{
+			//各変数の初期化
+			main_loop_cnt=0
+			max_sizet=0
+			info_loop_cnt=0
+			info_loop_wait=0
+			scroll_cnt=0
+			mea_cnt=0
+			track_name_x_limit=0
+
+			track_name_x_c=210
+			artist_name_x_c=210
+			album_name_x_c=210
+
+			track_name_x_cl=0
+			artist_name_x_cl=0
+			album_name_x_cl=0
+
+			track_name_loop_stop=0
+			artist_name_loop_stop=0
+			album_name_loop_stop=0
+		}
+	
+		
+		tweet_response = ""+getResponseHeader()+""+getResponseBody()+""
+		if tweet_response="":wait 100:goto,*tweet_spotify_info
+	}
+
+	
+	if tab_flag=0:tweet_data=tweet_data_s:else:tweet_data_c=tweet_data_s:else:tweet_data=tweet_data_s
+	track_name_c=track_name:artist_name_c=artist_name
+	
+	//wait 300
+
+	main_loop_cnt=0
+
+	if tweet_button_sw=1{
+		tweet_button_sw=0
+		goto,*main
+	}
+	
+	return
+	
+//タブ切り替え処理
+*change_tab
+	
+	dupptr nmhdr, lparam, 12
+	if nmhdr.0 = hTabControl & nmhdr.2 = -551 {
+		ChangeTab
+
+		//アクティブなウィンドウIDをtab_flagに格納(int型)
+		tab_flag=stat
+
+		//Mainのウィンドウ以外からMainウィンドウに帰ってきた場合
+		//設定したtweet_dataを各変数に割り当て保存する
+		if tab_flag=0{
+			
+			tweet_data_c=tweet_data
+			tweet_data_s=tweet_data
+
+			//保存(set1_ini)
+			exist"data/ini/tweet_data"
+			if strsize>0:delete"data/ini/tweet_data"
+			bsave "data/ini/tweet_data",tweet_data,strlen(tweet_data)
+
+			set1_ini=""
+			set1_ini+=""+artist_pun+""
+			set1_ini+="\n"+discord_cmd+""
+
+			exist"data/ini/set1"
+			if strsize>0:delete"data/ini/set1"
+			bsave "data/ini/set1",set1_ini,strlen(set1_ini)
+
+			//保存(set2_ini)
+
+			notesel theme_list
+			noteget theme_name,theme_list_num
+
+			notesel language_list
+			noteget language_name,language_list_num
+				
+			set2_ini=wp_pass
+			set2_ini+="\n"+str(auto_tweet_sw)+""
+			set2_ini+="\n"+str(theme_list_num)+""
+			set2_ini+="\n"+str(language_list_num)+""
+			set2_ini+="\n"+theme_name+""
+			set2_ini+="\n"+language_name+""
+			set2_ini+="\n"+str(wp_artwork)
+			set2_ini+="\n"+str(artwork_switch)
+			set2_ini+="\n"+str(overtweet_switch)
+			set2_ini+="\n"+str(window_active)
+
+			exist"data/ini/set2"
+			if strsize>0:delete"data/ini/set2"
+			bsave "data/ini/set2",set2_ini,strlen(set2_ini)
+			
+		}
+			
+		gsel
+	}
+	return
+
+*open_track_url
+	exec track_url,16
+	goto,*main
+	
+*discord_bot
+	aplsel "#"
+	aplact 
+	aplkey 27
+	aplstr "/"+discord_cmd+""+track_url+""
+	wait 1
+	aplkey 13
+	goto,*main
+	
+*do_stop
+
+	loop_now=0
+
+	gsel 4:objenable 0,1
+	gsel 4:objenable 1,1
+	gsel 4:objenable 2,1
+	gsel 4:objenable 3,1
+
+	gsel 1
+
+	boxf 0,0,400,250
+
+	if track_name!""{
+		gsel 1:objenable 0,0
+		gsel 1:objenable 1,0
+		gsel 1:objenable 2,0
+	}
+
+	pos 0,0
+	gcopy 11,0,0,400,250
+	gmode 3,400,138,200
+	pos 0,0
+	gcopy 12,0,0,400,250
+
+	color 255,255,255
+
+	font "IPAexゴシック",23
+	pos 137,95
+	mes "動作停止中"
+	font "IPAexゴシック",13
+	pos 107,125
+	mes "楽曲を再生すると再開されます"
+
+	clrobj 0,3
+
+	buffer 50:picload "data/pic/default_wallpaper.jpg":gsel 1
+	buffer 60
+	gcopy 50,0,0,400,250
+	
+	buffer 54,393*2,23
+	pos 0,0
+	gcopy 60,0,201,393,224
+	pos 393,0
+	gcopy 60,0,201,393,224
+	gmode 3,400,137,220
+	pos 393,0
+	gcopy 12,0,0,400,137
+
+	/*color 255,255,255
+	font "IPAexゴシック",13
+	pos 166,5
+	mes "動作再開"
+	pos 559,5
+	mes "動作再開"
+
+	gsel 1
+		
+	objsize 393,23
+
+	objimage 54,393,0,,,0,0
+	pos 0,201
+	button goto"",*start*/
+
+	tab_name="楽曲は再生されていません"
+	nkfcnv tab_name,tab_name,"Ws"
+
+	gsel 0
+	stbar_text tab_name
+
+	do_restart=1
+
+	repeat
+	
+	netinit
+	neturl player_api_url
+	netheader "Authorization: Bearer "+access_token+"\n"
+	netrequest_get "currently-playing"
+
+	repeat
+	netexec waitres
+	if waitres=1:break
+	wait 1
+	loop
+
+	netgetv playing_track_info
+
+	if playing_track_info!"" :break
+
+	if instr(playing_track_info,0,"\"error\"")!-1{
+		netinit
+		neturl "https://accounts.spotify.com/api/"
+		//netheader "Authorization: Basic "+client_id_base64+":"+client_secret_base64+"\n\n"
+		post_authorize="grant_type=refresh_token&refresh_token="+refresh_token+"&client_id="+client_id+"&client_secret="+client_secret+""
+		netrequest_post"token",post_authorize
+
+		repeat 10
+		netexec waitres
+		if waitres=1:break	
+		await 1
+		loop
+	
+		netgetv token_authorization
+		netterm
+	
+		//アクセストークンとリフレッシュトークンを取り出す
+		jsonopen pti_json,token_authorization
+		jsongets access_token,"access_token",pti_json
+		jsongets refresh_token,"refresh_token",pti_json
+
+		s_token_set=""+access_token+"\n"+refresh_token+""
+
+		//トークンの保存
+		exist"data/api/s_access_token"
+		if strsize>0:delete"data/api/s_access_token"
+		bsave "data/api/s_access_token",s_token_set,strlen(s_token_set)
+
+		dialog playing_track_info
+		
+	}
+	
+	wait 300
+
+	loop
+	
+	goto,*start
+
+
+*wp_pass_d
+	dialog "jpg;*.png;*.bmp",16,"壁紙選択"
+
+	if stat=7:goto,*main	
+
+	wp_pass_up=refstr
+
+	notesel set2_ini
+	noteadd wp_pass_up,0,1
+	exist"data/ini/set2"
+	if strsize>0:delete"data/ini/set2"
+	chdir dir_exe
+	bsave "data/ini/set2",set2_ini,strlen(set2_ini)
+
+	gsel 3
+	objprm 0,wp_pass_up
+	if tweet_data_s="":stop:else:goto,*start
+	
+*exit_app
+	if wparam=5:gsel 50,-1:stop//Twitterの認証PIN入力画面
+	
+	exist"data/pic/artwork.jpg"
+	if strsize>0:delete"data/pic/artwork.jpg"
+
+	exist"data/ini/tweet_data"
+	if strsize>0:delete"data/ini/tweet_data"
+	bsave "data/ini/tweet_data",tweet_data,strlen(tweet_data)
+
+	set1_ini=""
+	set1_ini+=""+artist_pun+""
+	set1_ini+="\n"+discord_cmd+""
+
+	exist"data/ini/set1"
+	if strsize>0:delete"data/ini/set1"
+	bsave "data/ini/set1",set1_ini,strlen(set1_ini)
+
+	//保存(set2_ini)
+
+	notesel theme_list
+	noteget theme_name,theme_list_num
+
+	notesel language_list
+	noteget language_name,language_list_num
+			
+	set2_ini=wp_pass
+	set2_ini+="\n"+str(auto_tweet_sw)+""
+	set2_ini+="\n"+str(theme_list_num)+""
+	set2_ini+="\n"+str(language_list_num)+""
+	set2_ini+="\n"+theme_name+""
+	set2_ini+="\n"+language_name+""
+	set2_ini+="\n"+str(wp_artwork)
+	set2_ini+="\n"+str(artwork_switch)
+	set2_ini+="\n"+str(overtweet_switch)
+	set2_ini+="\n"+str(window_active)
+	
+	exist"data/ini/set2"
+	if strsize>0:delete"data/ini/set2"
+	bsave "data/ini/set2",set2_ini,strlen(set2_ini)
+
+	RemoveFontResourceA font_pass
+	
+	end
+
+
+*twitter_authorize_p
+
+	//TsubuyakiSoup.modを使用
+
+	tCupInit"testClient",consumer_key,consumer_secret,10
+	t_address = getAuthorizeAddress()
+	exec t_address,16
+
+	
+	gsel 50,2
+	cls 
+	title"PINの入力"
+	
+	gsel 50
+	
+	pos 15,10
+	mes "PINを入力してください"
+	pos 50,35
+	input tapin,100,20
+	pos 67,60
+	button "OK",*t_get_access_token_p
+	stop
+
+*t_get_access_token_p
+
+	if tapin="":dialog "PINを入力してください":stop
+	
+	publishAccessToken t_access_token,t_access_secret,t_userdata,tapin
+	
+	t_apiinfo=""
+	t_apiinfo+=t_userdata+"\n"
+	t_apiinfo+=t_access_token+"\n"
+	t_apiinfo+=t_access_secret
+
+	split t_userdata,",",dummy,t_userdata
+
+	if instr(twitter_user_list,0,t_userdata)!-1{
+		strrep twitter_user_list,t_userdata+"\n",""
+	}
+
+	if instr(twitter_user_list,0,t_userdata+"\n")!-1{
+		strrep twitter_user_list,t_userdata,""
+	}
+
+	twitter_user_list+=t_userdata+"\n"
+
+	gsel 4
+	objprm 0,twitter_user_list
+	objprm 0,0
+	
+	exist"data/api/twitter/"+t_userdata+".spa"
+	if strsize>0:delete"data/api/twitter/"+t_userdata+".spa"
+	bsave "data/api/twitter/"+t_userdata+".spa",t_apiinfo,strlen(t_apiinfo)
+
+	exist"data/ini/accountset"
+	if strsize>0:delete"data/ini/accountset"
+	bsave "data/ini/accountset",t_userdata,strlen(t_userdata)
+
+	dialog "追加認証が完了しました\n開かれたタブは閉じてください"
+
+	gsel 50,-1
+
+	//setup済みflagを保存
+	twitter_setup_flag=1
+	twitter_setup_flag=str(twitter_setup_flag)
+	exist"data/ini/twitter_setup"
+	if strsize>0:delete"data/ini/twitter_setup"
+	bsave "data/ini/twitter_setup",twitter_setup_flag
+	twitter_setup_flag=int(twitter_setup_flag)
+
+	tapin=""
+
+	if do_restart=1{
+	gsel 1
+	if twitter_setup_flag=1:objprm 1,"Twitterは認証済みです":objenable 1,0
+	}
+	gsel 4:objenable 2,1:objenable 3,1
+
+	gsel 4
+
+	cls
+
+	dirlist twitter_user_list,"data/api/twitter/*.spa",0
+	strrep twitter_user_list,".spa",""
+
+	color int(spt_bc(0)),int(spt_bc(1)),int(spt_bc(2)):boxf
+	if spt_bi_data!""{
+	pos 0,0
+	gcopy 13,0,0,400,230
+	gmode 3,400,230,spt_bi_tp
+	pos 0,0
+	gcopy 12,0,0,400,230
+	}
+	color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+
+	pos 3,3
+	font "IPAexゴシック",15
+	mes "アカウント一覧(@id)"
+	objsize 385,20
+	combox twitter_user_num,150,twitter_user_list
+
+	font "IPAexゴシック",13
+	pos 5,160
+	
+	if t_userdata=""{
+		mes "アカウントが登録されていません"
+	}else{
+		mes "現在使用中のアカウント : @"+t_userdata
+	}
+
+	objsize 100,20
+	pos 5,200
+	button goto"アカウント追加",*twitter_authorize_p
+
+	objsize 100,20
+	pos 110,200
+	button goto"アカウント削除",*delete_twitter
+
+	objsize 100,20
+	pos 287,200
+	button goto"このアカウントを使う",*twitter_decision
+
+	if twitter_user_list="":gsel 4:objenable 2,0:objenable 3,0
+	
+	stop
+
+*delete_twitter
+
+	dialog "このアカウントを消去しますか？",3
+	if stat=7:stop
+
+	notesel twitter_user_list
+	noteget t_userdata,twitter_user_num
+
+	exist"data/api/twitter/"+t_userdata+".spa"
+	if strsize>0:delete"data/api/twitter/"+t_userdata+".spa"
+
+	if instr(twitter_user_list,0,t_userdata)!-1{
+		strrep twitter_user_list,t_userdata+"\n",""
+	}
+
+	if instr(twitter_user_list,0,t_userdata+"\n")!-1{
+		strrep twitter_user_list,t_userdata,""
+	}
+
+	notesel twitter_user_list
+	noteget t_userdata,twitter_user_num-1
+
+	exist"data/ini/accountset"
+	if strsize>0:delete"data/ini/accountset"
+	bsave "data/ini/accountset",t_userdata,strlen(t_userdata)
+
+	dialog "消去しました"
+
+	dirlist twitter_user_list,"data/api/twitter/*.spa",0
+	strrep twitter_user_list,".spa",""
+
+	gsel 4
+	objprm 0,twitter_user_list
+	objprm 0,0
+
+	if twitter_user_list="":gsel 4:objenable 2,0:objenable 3,0
+
+	if twitter_user_list=""{
+		twitter_setup_flag=0
+		//未setupflagを保存
+		twitter_setup_flag=str(twitter_setup_flag)
+		exist"data/ini/twitter_setup"
+		if strsize>0:delete"data/ini/twitter_setup"
+		bsave "data/ini/twitter_setup",twitter_setup_flag
+		twitter_setup_flag=int(twitter_setup_flag)
+
+		gsel 4
+
+		cls
+
+		color int(spt_bc(0)),int(spt_bc(1)),int(spt_bc(2)):boxf
+		if spt_bi_data!""{
+		pos 0,0
+		gcopy 13,0,0,400,230
+		gmode 3,400,230,spt_bi_tp
+		pos 0,0
+		gcopy 12,0,0,400,230
+		}
+		color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+
+		pos 3,3
+		font "IPAexゴシック",15
+		mes "アカウント一覧(@id)"
+		objsize 385,20
+		combox twitter_user_num,150,twitter_user_list
+
+		font "IPAexゴシック",13
+		pos 5,160
+	
+		if t_userdata=""{
+			mes "アカウントが登録されていません"
+		}else{
+			mes "現在使用中のアカウント : @"+t_userdata
+		}
+
+		objsize 100,20
+		pos 5,200
+		button goto"アカウント追加",*twitter_authorize_p
+
+		objsize 100,20
+		pos 110,200
+		button goto"アカウント削除",*delete_twitter
+
+		objsize 100,20
+		pos 287,200
+		button goto"このアカウントを使う",*twitter_decision
+
+		if twitter_user_list="":gsel 4:objenable 2,0:objenable 3,0
+		goto,*twitter_setup
+		}
+
+	gsel 4
+
+	cls
+
+	dirlist twitter_user_list,"data/api/twitter/*.spa",0
+	strrep twitter_user_list,".spa",""
+
+	color int(spt_bc(0)),int(spt_bc(1)),int(spt_bc(2)):boxf
+	if spt_bi_data!""{
+	pos 0,0
+	gcopy 13,0,0,400,230
+	gmode 3,400,230,spt_bi_tp
+	pos 0,0
+	gcopy 12,0,0,400,230
+	}
+	color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+
+	pos 3,3
+	font "IPAexゴシック",15
+	mes "アカウント一覧(@id)"
+	objsize 385,20
+	combox twitter_user_num,150,twitter_user_list
+
+	font "IPAexゴシック",13
+	pos 5,160
+	
+	if t_userdata=""{
+		mes "アカウントが登録されていません"
+	}else{
+		mes "現在使用中のアカウント : @"+t_userdata
+	}
+
+	objsize 100,20
+	pos 5,200
+	button goto"アカウント追加",*twitter_authorize_p
+
+	objsize 100,20
+	pos 110,200
+	button goto"アカウント削除",*delete_twitter
+
+	objsize 100,20
+	pos 287,200
+	button goto"このアカウントを使う",*twitter_decision
+
+	if twitter_user_list="":gsel 4:objenable 2,0:objenable 3,0
+	
+	stop
+
+*twitter_setup
+
+	gsel 1
+	cls
+
+	//背景色
+	color int(spt_bc(0)),int(spt_bc(1)),int(spt_bc(2)):boxf
+
+	//背景画像
+	//画像がある場合のみ表示
+	if spt_bi_data!""{
+	pos 0,0
+	gcopy 13,0,0,400,230
+	gmode 3,400,230,spt_bi_tp
+	pos 0,0
+	gcopy 12,0,0,400,230
+	}
+	//文字色
+	color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+
+
+	font "IPAexゴシック",16
+
+
+	objsize 300,30
+	pos 85,25
+	mes "初期設定を完了させてください"
+
+
+	pos 50,70
+	button goto"Spotifyの認証",*spotify_authorize
+	pos 50,115
+	button goto"Twitterの認証",*twitter_authorize
+	pos 50,160
+	button goto"利用開始",*start
+
+
+	//数値変換
+	spotify_setup_flag=int(spotify_setup_flag)
+	twitter_setup_flag=int(twitter_setup_flag)
+
+
+	if spotify_setup_flag=1:objprm 0,"Spotifyは認証済みです":objenable 0,0
+
+	stop
+
+*twitter_decision
+
+	if twitter_user_list="":dialog"アカウントを登録してください":stop
+
+	dialog "このアカウントを使用しますか？",2
+	if stat=7:stop
+
+	notesel twitter_user_list
+	noteget account_default,twitter_user_num
+
+	notesel t_apiinfo
+	noteload "data/api/twitter/"+account_default+".spa"
+	noteget t_access_token,1
+	noteget t_access_secret,2
+
+	exist"data/ini/accountset"
+	if strsize>0:delete"data/ini/accountset"
+	bsave "data/ini/accountset",account_default,strlen(account_default)
+
+	dialog"アカウントを設定しました"
+
+	gsel 4
+
+	cls
+
+	dirlist twitter_user_list,"data/api/twitter/*.spa",0
+	strrep twitter_user_list,".spa",""
+
+	color int(spt_bc(0)),int(spt_bc(1)),int(spt_bc(2)):boxf
+	if spt_bi_data!""{
+	pos 0,0
+	gcopy 13,0,0,400,230
+	gmode 3,400,230,spt_bi_tp
+	pos 0,0
+	gcopy 12,0,0,400,230
+	}
+	color int(spt_tc(0)),int(spt_tc(1)),int(spt_tc(2))
+
+	pos 3,3
+	font "IPAexゴシック",15
+	mes "アカウント一覧(@id)"
+	objsize 385,20
+	combox twitter_user_num,150,twitter_user_list
+
+	font "IPAexゴシック",13
+	pos 5,160
+	
+	if account_default=""{
+		mes "アカウントが登録されていません"
+	}else{
+		mes "現在使用中のアカウント : @"+account_default
+	}
+
+	objsize 100,20
+	pos 5,200
+	button goto"アカウント追加",*twitter_authorize_p
+
+	objsize 100,20
+	pos 110,200
+	button goto"アカウント削除",*delete_twitter
+
+	objsize 100,20
+	pos 287,200
+	button goto"このアカウントを使う",*twitter_decision
+
+	if twitter_user_list="":gsel 4:objenable 2,0:objenable 3,0
+
+	stop
+
+*set_initialization
+
+	dialog "全設定(設定1,設定2)を初期化しますがよろしいでしょうか？",3,"Snowpy"
+
+	if stat = 7{
+		if loop_now=0:stop:else:goto,*start
+	}
+
+	tweet_data="NowPlaying...\nTrack:{TRACK_NAME}\nArtist:{ARTIST_NAME}\nin {ALBUM_NAME}\n#snowpy #np #spotify\n{TRACK_URL}"
+
+	artwork_switch=1
+	overtweet_switch=1
+
+	wp_pass="data/pic/default_wallpaper.jpg"
+	auto_tweet_sw=0
+	theme_list_num=1
+	theme_name="light"
+	error_report_sw=0
+
+	//保存(set1_ini)
+	exist"data/ini/tweet_data"
+	if strsize>0:delete"data/ini/tweet_data"
+	bsave "data/ini/tweet_data",tweet_data,strlen(tweet_data)
+
+	set1_ini=""
+	set1_ini+=""+artist_pun+""
+
+	exist"data/ini/set1"
+	if strsize>0:delete"data/ini/set1"
+	bsave "data/ini/set1",set1_ini,strlen(set1_ini)
+
+	//保存(set2_ini)
+
+	notesel theme_list
+	noteget theme_name,theme_list_num
+
+	notesel language_list
+	noteget language_name,language_list_num
+				
+	set2_ini=wp_pass
+	set2_ini+="\n"+str(auto_tweet_sw)+""
+	set2_ini+="\n"+str(theme_list_num)+""
+	set2_ini+="\n"+str(language_list_num)+""
+	set2_ini+="\n"+theme_name+""
+	set2_ini+="\n"+language_name+""
+	set2_ini+="\n"+str(wp_artwork)
+	set2_ini+="\n"+str(artwork_switch)
+	set2_ini+="\n"+str(overtweet_switch)
+
+	exist"data/ini/set2"
+	if strsize>0:delete"data/ini/set2"
+	bsave "data/ini/set2",set2_ini,strlen(set2_ini)
+
+	FilepathR=""
+
+	GetModuleFileName 0,FilepathR,256
+
+	exec ""+FilepathR+" ReStart"
+	
+	end
