@@ -1,0 +1,2 @@
+# Snowpy
+Spotify Now Playing
