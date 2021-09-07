@@ -43,7 +43,7 @@ stbar_ini
 
 //付属の.icoファイルをアイコンに設定
 #packopt icon "data/pic/swonpy_logo.ico"
-#packopt name "Swonpy"
+#packopt name "Snowpy"
 
 onexit goto,*exit_app
 
