@@ -19,8 +19,12 @@ Client Secret (API Secret)
 
 暗号化されpackfileが生成されます
 
-### 結構バグが多い
-気が向いたら少しずつ減らしていく予定
+### 開発終了
+
+古のソフトです
+開発は終了しています
+
+同じもの作るならpythonで作ろうかなと考えています
 
 ### License
 MIT License
