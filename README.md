@@ -23,6 +23,12 @@ Client Secret (API Secret)
 
 古のソフトです
 開発は終了しています
+エラー修正もしません
+
+このソースコードではビルドできないことが判明したので
+修正したソースコードを置いておきます
+
+[https://www.dropbox.com/s/571lyvlvpzeyfyu/Snowpy_SourceCode.zip?dl=0](https://www.dropbox.com/s/571lyvlvpzeyfyu/Snowpy_SourceCode.zip?dl=0)
 
 同じもの作るならpythonで作ろうかなと考えています
 
